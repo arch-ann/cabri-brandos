@@ -1,0 +1,2652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cabri Caldwell — Brand OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F7F6F3;--surface:#fff;--s2:#F2F1EE;--s3:#ECEAE5;
+  --border:#E5E3DE;--text:#1A1A18;--t2:#6B6B67;--t3:#9E9E99;
+  --accent:#2A2A28;--brand:#C8A96E;--bl:#F5EDD9;--bm:#E8D4A8;
+  --c1:#7B8EC8;--c2:#6BBD7A;--c3:#C87B5A;--c4:#9B7BC8;--c5:#4AADA8;
+  --r:12px;--rs:8px;--rx:6px;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+  --shm:0 2px 8px rgba(0,0,0,.08),0 8px 32px rgba(0,0,0,.06);
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5}
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{width:228px;min-width:228px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto}
+.sb-head{padding:20px 18px 14px;border-bottom:1px solid var(--border)}
+.logo{font-family:'Playfair Display',serif;font-size:15px;font-weight:500;letter-spacing:.03em;display:flex;align-items:center;gap:7px;margin-bottom:12px}
+.logo-dot{width:6px;height:6px;border-radius:50%;background:var(--brand)}
+.sb-section{padding:12px 10px 4px}
+.sb-label{font-size:10px;font-weight:500;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;padding:0 8px;margin-bottom:3px}
+.ni{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:var(--rs);cursor:pointer;color:var(--t2);font-size:13px;transition:all .15s;border:none;background:none;width:100%;text-align:left;font-family:'DM Sans',sans-serif}
+.ni:hover{background:var(--s2);color:var(--text)}
+.ni.active{background:var(--accent);color:#fff}
+.ni-icon{width:14px;height:14px;opacity:.6;flex-shrink:0}
+.ni.active .ni-icon{opacity:1}
+.pdot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.pct{margin-left:auto;font-size:10px;color:var(--t3);font-weight:500}
+.ni.active .pct{color:rgba(255,255,255,.5)}
+
+/* BRAND SWITCHER */
+.brand-switcher{margin:auto 10px 0;border-top:1px solid var(--border);padding:12px 0 10px}
+.bs-label{font-size:10px;font-weight:500;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;padding:0 8px;margin-bottom:6px}
+.brand-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--rs);cursor:pointer;transition:all .15s;font-size:13px;color:var(--t2)}
+.brand-item:hover{background:var(--s2);color:var(--text)}
+.brand-item.current{background:var(--bl);color:var(--text)}
+.brand-avatar{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0;color:#fff}
+.brand-info{flex:1;min-width:0}
+.brand-name{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-score{font-size:10px;color:var(--t3)}
+.brand-add{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:var(--rs);cursor:pointer;font-size:12px;color:var(--t3);border:1px dashed var(--border);margin:4px 0;transition:all .15s}
+.brand-add:hover{border-color:var(--brand);color:var(--brand);background:var(--bl)}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.crumb{font-size:13px;color:var(--t2);display:flex;align-items:center;gap:5px}
+.crumb b{color:var(--text);font-weight:500}
+.tb-r{display:flex;align-items:center;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:var(--rs);font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .15s;font-family:'DM Sans',sans-serif;white-space:nowrap}
+.btn-p{background:var(--accent);color:#fff}.btn-p:hover{background:#333}
+.btn-g{background:none;color:var(--t2);border:1px solid var(--border)}.btn-g:hover{background:var(--s2);color:var(--text)}
+.btn-b{background:var(--brand);color:#fff}.btn-b:hover{background:#b8983e}
+.btn-sm{padding:5px 11px;font-size:12px}
+.content{padding:26px 30px;flex:1}
+
+/* VIEWS */
+.view{display:none}.view.active{display:block;animation:fu .22s ease}
+@keyframes fu{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.pg-title{font-family:'Playfair Display',serif;font-size:23px;font-weight:400;letter-spacing:-.01em;margin-bottom:3px}
+.pg-sub{font-size:13px;color:var(--t2);margin-bottom:22px}
+
+/* ROTATING SUBHEADING */
+.pg-sub-wrap{position:relative;margin-bottom:22px}
+.pg-sub{font-size:13px;color:var(--t2);line-height:1.6;max-width:480px}
+.health-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;margin-bottom:18px;display:flex;align-items:center;gap:18px;box-shadow:var(--sh)}
+.hs{font-family:'Playfair Display',serif;font-size:36px;font-weight:400;line-height:1;min-width:56px}
+.hs small{font-size:14px;color:var(--t3);font-family:'DM Sans',sans-serif;font-weight:300}
+.hi{flex:1}.hl{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:5px}
+.ht{height:5px;background:var(--s2);border-radius:99px;overflow:hidden;margin-bottom:4px}
+.hf{height:100%;background:linear-gradient(90deg,var(--brand),#E8C47A);border-radius:99px}
+.hd{font-size:12px;color:var(--t2)}
+.pg{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
+.pc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;cursor:pointer;transition:all .2s;box-shadow:var(--sh);position:relative;overflow:hidden}
+.pc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.pc.p1::before{background:var(--c1)}.pc.p2::before{background:var(--c2)}.pc.p3::before{background:var(--c3)}.pc.p4::before{background:var(--c4)}.pc.p5::before{background:var(--c5)}
+.pc:hover{transform:translateY(-2px);box-shadow:var(--shm);border-color:#D5D3CE}
+.pc-n{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
+.pc-t{font-family:'Playfair Display',serif;font-size:14px;font-weight:500;margin-bottom:8px}
+.pc-bar{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.pt{flex:1;height:3px;background:var(--s2);border-radius:99px;overflow:hidden}
+.pf{height:100%;border-radius:99px}
+.p1 .pf{background:var(--c1)}.p2 .pf{background:var(--c2)}.p3 .pf{background:var(--c3)}.p4 .pf{background:var(--c4)}.p5 .pf{background:var(--c5)}
+.pc-pct{font-size:10px;color:var(--t3);font-weight:500}
+.pc-s{font-size:11px;color:var(--t2)}
+.pc-arr{position:absolute;bottom:12px;right:12px;font-size:13px;color:var(--t3);transition:transform .2s}
+.pc:hover .pc-arr{transform:translateX(3px)}
+.db-bot{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;box-shadow:var(--sh)}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.ct{font-size:13px;font-weight:500}
+.cl{font-size:12px;color:var(--brand);cursor:pointer;font-weight:500}.cl:hover{text-decoration:underline}
+.ai-badge{display:inline-flex;align-items:center;background:var(--bl);color:#8B6F2E;font-size:10px;font-weight:500;padding:2px 8px;border-radius:99px}
+.ar{display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid var(--border)}
+.ar:last-child{border-bottom:none}
+.ai-icon{width:28px;height:28px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.an{font-size:13px;flex:1}.am{font-size:11px;color:var(--t3)}
+.tag{font-size:10px;padding:2px 7px;border-radius:99px;font-weight:500;text-transform:uppercase;letter-spacing:.03em}
+.tb{background:var(--bl);color:#8B6F2E}.tc{background:#EAF0EA;color:#3A7A3A}.ts{background:#EAE8F5;color:#5A3A8A}.tt{background:#E8F5F5;color:#2A7A78}
+.mc{display:flex;flex-direction:column;gap:7px;max-height:140px;overflow-y:auto}
+.cm{background:var(--s2);border-radius:var(--rs);padding:8px 11px;font-size:13px;line-height:1.5}
+.cm.u{background:var(--accent);color:#fff;align-self:flex-end;max-width:85%}
+.ai-row{display:flex;gap:7px;margin-top:8px}
+.ai-row input,.field-input{border:1px solid var(--border);border-radius:var(--rs);padding:7px 11px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--surface);outline:none;transition:border-color .15s;width:100%}
+.ai-row input:focus,.field-input:focus{border-color:var(--brand)}
+.ai-row input::placeholder,.field-input::placeholder{color:var(--t3)}
+.ai-row input{width:auto;flex:1}
+
+/* PILLAR */
+.pl-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px}
+.pl-meta{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.pdot-lg{width:10px;height:10px;border-radius:3px}
+.pl-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:500;color:var(--t3)}
+.sec-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;cursor:pointer;transition:all .2s;box-shadow:var(--sh)}
+.sc:hover{transform:translateY(-1px);box-shadow:var(--shm);border-color:#D5D3CE}
+.sc-icon{font-size:18px;margin-bottom:8px}
+.sc-t{font-size:14px;font-weight:500;margin-bottom:3px}
+.sc-d{font-size:12px;color:var(--t2);line-height:1.5}
+.sc-st{display:flex;align-items:center;gap:5px;margin-top:8px;font-size:11px;color:var(--t3)}
+.sdot{width:6px;height:6px;border-radius:50%}
+.sdot.done{background:#6BBD7A}.sdot.progress{background:var(--brand)}.sdot.todo{background:var(--border)}
+
+/* STEP DETAIL */
+.step-back{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--t2);cursor:pointer;margin-bottom:18px;border:none;background:none;font-family:'DM Sans',sans-serif;padding:0}
+.step-back:hover{color:var(--text)}
+.step-tabs{display:flex;gap:2px;background:var(--s2);padding:3px;border-radius:var(--rs);width:fit-content;margin-bottom:18px}
+.stab{padding:6px 14px;border-radius:6px;font-size:13px;color:var(--t2);cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;transition:all .15s}
+.stab.active{background:var(--surface);color:var(--text);font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.learn-media{background:var(--s3);border:1px solid var(--border);border-radius:var(--r);padding:28px;text-align:center;margin-bottom:14px}
+.lm-icon{font-size:28px;margin-bottom:8px}
+.lm-title{font-size:14px;font-weight:500;margin-bottom:3px}
+.lm-sub{font-size:12px;color:var(--t2);margin-bottom:12px}
+.learn-key{background:var(--bl);border-radius:var(--rs);padding:12px 14px;font-size:13px;line-height:1.6;border-left:3px solid var(--brand)}
+.learn-key strong{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:#8B6F2E;margin-bottom:4px}
+.worksheet{display:flex;flex-direction:column;gap:14px}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fl{font-size:12px;font-weight:500;color:var(--text)}
+.fh{font-size:11px;color:var(--t3);margin-top:-2px}
+textarea.field-input{resize:vertical;min-height:76px;line-height:1.5}
+.fopts{display:flex;flex-wrap:wrap;gap:6px}
+.opt{padding:5px 12px;border-radius:99px;font-size:12px;border:1px solid var(--border);background:var(--surface);color:var(--t2);cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif}
+.opt:hover{border-color:var(--brand);color:var(--text)}
+.opt.sel{background:var(--accent);color:#fff;border-color:var(--accent)}
+.save-r{display:flex;justify-content:flex-end;margin-top:12px}
+.ai-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;box-shadow:var(--sh)}
+.ap-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.ai-resp{background:var(--s2);border-radius:var(--rs);padding:12px;font-size:13px;color:var(--text);line-height:1.6;margin-bottom:10px;min-height:72px}
+.ai-italic{color:var(--t3);font-style:italic}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.chip{padding:4px 11px;border-radius:99px;font-size:12px;border:1px solid var(--border);background:var(--surface);color:var(--t2);cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif}
+.chip:hover{border-color:var(--brand);color:var(--text);background:var(--bl)}
+
+/* ACTIVATE */
+.activate-note{background:var(--bl);border-radius:var(--rs);padding:11px 13px;font-size:13px;color:#8B6F2E;margin-bottom:18px;border-left:3px solid var(--brand)}
+.ch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ch-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;box-shadow:var(--sh)}
+.ch-card.locked{opacity:.45;pointer-events:none}
+.ch-head{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.ch-icon{font-size:18px}
+.ch-name{font-size:14px;font-weight:500}
+.ch-tag{font-size:10px;padding:2px 7px;border-radius:99px;font-weight:500;margin-left:auto}
+.ch-tag.on{background:#EAF0EA;color:#3A7A3A}.ch-tag.off{background:var(--s2);color:var(--t3)}
+.ch-rows{display:flex;flex-direction:column;gap:5px}
+.ch-row{display:flex;align-items:center;justify-content:space-between;padding:6px 9px;background:var(--s2);border-radius:var(--rx);font-size:12px;color:var(--t2);cursor:pointer;transition:all .15s}
+.ch-row:hover{background:var(--s3);color:var(--text)}
+.ch-locked{font-size:12px;color:var(--t3);text-align:center;padding:14px 0;font-style:italic}
+
+/* CONVERT */
+.tk-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.tk{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:18px;cursor:pointer;transition:all .2s;box-shadow:var(--sh);text-align:center}
+.tk:hover{border-color:var(--bm);transform:translateY(-1px)}
+.tk.sel{border-color:var(--accent)}
+.tk-icon{font-size:26px;margin-bottom:8px}
+.tk-t{font-size:15px;font-weight:500;margin-bottom:4px}
+.tk-d{font-size:12px;color:var(--t2);line-height:1.5}
+.cv-steps{display:flex;flex-direction:column;gap:9px}
+.cv{display:flex;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;box-shadow:var(--sh)}
+.cv-n{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-top:1px}
+.cv-n.done{background:#6BBD7A;color:#fff}.cv-n.now{background:var(--accent);color:#fff}.cv-n.soon{background:var(--s2);color:var(--t3)}
+.cv-b{flex:1}
+.cv-t{font-size:13px;font-weight:500;margin-bottom:2px}
+.cv-d{font-size:12px;color:var(--t2);line-height:1.5}
+.cv-checks{display:flex;flex-direction:column;gap:3px;margin-top:8px}
+.cv-check{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t2)}
+.cv-check input{accent-color:var(--accent)}
+
+/* AUTOMATE */
+.auto-intro{background:linear-gradient(135deg,#F0F4FF,#EAF5EA);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:20px}
+.auto-intro-t{font-family:'Playfair Display',serif;font-size:16px;font-weight:500;margin-bottom:5px}
+.auto-intro-d{font-size:13px;color:var(--t2);line-height:1.5}
+.pain-section{margin-bottom:20px}
+.pain-title{font-size:13px;font-weight:500;margin-bottom:10px;color:var(--text)}
+.pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pain-item{display:flex;align-items:flex-start;gap:8px;padding:10px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);cursor:pointer;transition:all .15s;box-shadow:var(--sh)}
+.pain-item:hover{border-color:var(--bm)}
+.pain-item.sel{border-color:var(--c5);background:#F0FAFA}
+.pain-cb{width:15px;height:15px;accent-color:var(--c5);flex-shrink:0;margin-top:1px}
+.pain-label{font-size:12px;color:var(--text);line-height:1.4}
+.auto-generate{margin-top:16px;display:flex;gap:10px;align-items:center}
+.auto-results{margin-top:20px;display:flex;flex-direction:column;gap:10px}
+.auto-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.auto-card-head{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;transition:background .15s}
+.auto-card-head:hover{background:var(--s2)}
+.auto-priority{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;color:#fff}
+.pri-high{background:#C87B5A}.pri-mid{background:var(--brand)}.pri-low{background:#9B7BC8}
+.auto-card-title{font-size:13px;font-weight:500;flex:1}
+.auto-card-tool{font-size:11px;color:var(--t3)}
+.auto-card-chevron{font-size:12px;color:var(--t3);transition:transform .2s}
+.auto-card-body{padding:0 16px;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s}
+.auto-card-body.open{max-height:300px;padding:0 16px 14px}
+.auto-body-content{border-top:1px solid var(--border);padding-top:12px;font-size:13px;color:var(--t2);line-height:1.6}
+.auto-ai-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;box-shadow:var(--sh);margin-top:16px}
+
+/* CONTENT STUDIO */
+.studio-header{background:linear-gradient(135deg,var(--bl),#FFF8EE);border:1px solid var(--border);border-radius:var(--r);padding:20px 22px;margin-bottom:20px}
+.studio-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:400;margin-bottom:4px}
+.studio-sub{font-size:13px;color:var(--t2)}
+.studio-nav{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px}
+.snav{padding:8px 16px;font-size:13px;font-weight:400;color:var(--t2);cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.snav:hover{color:var(--text)}
+.snav.active{color:var(--text);font-weight:500;border-bottom-color:var(--accent)}
+/* Loop diagram */
+.loop-diagram{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.loop-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;text-align:center;box-shadow:var(--sh)}
+.loop-icon{font-size:24px;margin-bottom:8px}
+.loop-t{font-family:'Playfair Display',serif;font-size:15px;font-weight:500;margin-bottom:4px}
+.loop-sub{font-size:11px;color:var(--brand);font-style:italic;margin-bottom:6px}
+.loop-d{font-size:12px;color:var(--t2);line-height:1.5}
+/* Format tables */
+.fmt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.fmt-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;box-shadow:var(--sh)}
+.fmt-head{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid var(--border)}
+.fmt-head.reach{border-color:var(--c1)}.fmt-head.retention{border-color:var(--c2)}.fmt-head.conversion{border-color:var(--c4)}
+.fmt-row{display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--s2);font-size:12px;gap:6px}
+.fmt-row:last-child{border-bottom:none}
+.fmt-name{font-weight:500;flex:1}
+.fmt-plat{color:var(--t3);font-size:11px;flex-shrink:0}
+/* Sells section */
+.sells-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.sells-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;box-shadow:var(--sh);text-align:center}
+.sells-num{font-family:'Playfair Display',serif;font-size:13px;font-style:italic;color:var(--t3);margin-bottom:6px}
+.sells-t{font-family:'Playfair Display',serif;font-size:18px;font-weight:500;margin-bottom:6px}
+.sells-d{font-size:12px;color:var(--t2);line-height:1.5;font-style:italic}
+/* Content generator */
+.gen-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;box-shadow:var(--sh);margin-bottom:14px}
+.gen-title{font-size:13px;font-weight:500;margin-bottom:12px}
+.gen-type-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.gen-out{background:var(--s2);border-radius:var(--rs);padding:14px;font-size:13px;line-height:1.6;min-height:80px;margin-top:12px;white-space:pre-wrap}
+
+/* BRAND DASHBOARDS */
+.db-view-tabs{display:flex;gap:2px;background:var(--s2);padding:3px;border-radius:var(--rs);width:fit-content;margin-bottom:22px}
+.dbtab{padding:6px 16px;border-radius:6px;font-size:13px;color:var(--t2);cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;transition:all .15s}
+.dbtab.active{background:var(--surface);color:var(--text);font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+/* Score ring */
+.score-rings{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
+.ring-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 10px;text-align:center;cursor:pointer;transition:all .2s;box-shadow:var(--sh)}
+.ring-card:hover{transform:translateY(-1px);box-shadow:var(--shm);border-color:#D5D3CE}
+.ring-wrap{position:relative;width:56px;height:56px;margin:0 auto 8px}
+.ring-svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--s2);stroke-width:5}
+.ring-fill{fill:none;stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset 1s ease}
+.ring-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Playfair Display',serif;font-size:14px;font-weight:400;line-height:1}
+.ring-label{font-size:11px;font-weight:500;color:var(--text);margin-bottom:2px}
+.ring-sub{font-size:10px;color:var(--t3)}
+/* Sparkline */
+.sparkline-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:18px;box-shadow:var(--sh)}
+.spark-head{display:flex;align-items:flex-end;gap:12px;margin-bottom:14px}
+.spark-score{font-family:'Playfair Display',serif;font-size:36px;font-weight:400;line-height:1}
+.spark-delta{font-size:12px;font-weight:500;padding:2px 7px;border-radius:99px;margin-bottom:4px}
+.delta-up{background:#EAF5EA;color:#3A7A3A}
+.delta-down{background:#FAE8E5;color:#A03020}
+.spark-label{font-size:11px;color:var(--t3);margin-bottom:6px}
+.spark-svg{width:100%;height:48px}
+/* Metric grid */
+.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.metric-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;box-shadow:var(--sh)}
+.metric-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:6px}
+.metric-val{font-family:'Playfair Display',serif;font-size:22px;font-weight:400;line-height:1;margin-bottom:4px}
+.metric-sub{font-size:11px;color:var(--t2)}
+.metric-bar{height:3px;background:var(--s2);border-radius:99px;overflow:hidden;margin-top:8px}
+.metric-bar-fill{height:100%;border-radius:99px}
+/* Pulse & report */
+.pulse-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:14px;box-shadow:var(--sh)}
+.pulse-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.pulse-title{font-size:13px;font-weight:500;display:flex;align-items:center;gap:7px}
+.pulse-date{font-size:11px;color:var(--t3)}
+.pulse-items{display:flex;flex-direction:column;gap:7px}
+.pulse-item{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;border-radius:var(--rs);font-size:13px;line-height:1.5}
+.pulse-item.good{background:#EAF5EA;color:#1A3A1A}
+.pulse-item.warn{background:#FDF5E4;color:#3A2A00}
+.pulse-item.act{background:#EAE8F5;color:#2A1A4A}
+.pulse-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.good .pulse-dot{background:#3A9A3A}.warn .pulse-dot{background:var(--brand)}.act .pulse-dot{background:#7B8EC8}
+.report-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh)}
+.report-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.report-body{font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap}
+.report-locked{text-align:center;padding:28px;color:var(--t2)}
+.report-locked-icon{font-size:28px;margin-bottom:10px}
+/* Pillar detail dashboard */
+.pillar-dash-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px}
+.pd-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:15px;box-shadow:var(--sh)}
+.pd-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:8px}
+.pd-items{display:flex;flex-direction:column;gap:5px}
+.pd-row{display:flex;align-items:center;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--s2)}
+.pd-row:last-child{border-bottom:none}
+.pd-check{font-size:14px}
+.pd-name{flex:1;color:var(--t2);margin:0 8px}
+.pd-status{font-size:10px;font-weight:500;padding:1px 6px;border-radius:99px}
+.st-done{background:#EAF5EA;color:#3A7A3A}.st-prog{background:var(--bl);color:#8B6F2E}.st-todo{background:var(--s2);color:var(--t3)}
+
+/* MANUAL METRICS INPUT */
+.metrics-input-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:14px;box-shadow:var(--sh)}
+.metrics-input-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.metrics-platform-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.ptab{padding:5px 12px;border-radius:99px;font-size:12px;border:1px solid var(--border);background:var(--surface);color:var(--t2);cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif}
+.ptab:hover{border-color:var(--brand);color:var(--text)}
+.ptab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.metrics-fields{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.mf{display:flex;flex-direction:column;gap:4px}
+.mf-label{font-size:11px;font-weight:500;color:var(--t2)}
+.mf-input{border:1px solid var(--border);border-radius:var(--rs);padding:7px 10px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--surface);outline:none;transition:border-color .15s;width:100%}
+.mf-input:focus{border-color:var(--brand)}
+.mf-input::placeholder{color:var(--t3)}
+.metrics-history{margin-top:14px}
+.mh-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:8px}
+.mh-table{width:100%;border-collapse:collapse;font-size:12px}
+.mh-table th{text-align:left;padding:5px 8px;color:var(--t3);font-weight:500;font-size:10px;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border)}
+.mh-table td{padding:7px 8px;border-bottom:1px solid var(--s2);color:var(--t2)}
+.mh-table tr:last-child td{border-bottom:none}
+.mh-delta{font-size:11px;font-weight:500}
+.mh-up{color:#3A9A3A}.mh-down{color:#C05A3A}.mh-flat{color:var(--t3)}
+.no-data{font-size:13px;color:var(--t3);text-align:center;padding:20px;font-style:italic}
+
+/* RESOURCES */
+.res-tabs{display:flex;gap:2px;background:var(--s2);padding:3px;border-radius:var(--rs);width:fit-content;margin-bottom:18px}
+.rtab{padding:5px 14px;border-radius:6px;font-size:13px;color:var(--t2);cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;transition:all .15s}
+.rtab.active{background:var(--surface);color:var(--text);font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.vault-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.vi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;box-shadow:var(--sh)}
+.vi-icon{font-size:20px;margin-bottom:7px}
+.vi-t{font-size:13px;font-weight:500;margin-bottom:2px}
+.vi-m{font-size:11px;color:var(--t3);margin-bottom:8px}
+.vi-acts{display:flex;gap:5px}
+.lib-list{display:flex;flex-direction:column;gap:7px}
+.li{display:flex;align-items:center;gap:11px;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);padding:11px 13px;box-shadow:var(--sh)}
+.li-icon{font-size:16px;flex-shrink:0}
+.li-t{font-size:13px;font-weight:500;margin-bottom:1px}
+.li-d{font-size:12px;color:var(--t2)}
+.li-tag{margin-left:auto;flex-shrink:0}
+
+/* AUDIT */
+.ag{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+.ac{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;box-shadow:var(--sh)}
+.ac-l{font-size:10px;text-transform:uppercase;letter-spacing:.07em;font-weight:500;color:var(--t3);margin-bottom:3px}
+.ac-row{display:flex;align-items:flex-end;gap:6px;margin-bottom:6px}
+.ac-n{font-family:'Playfair Display',serif;font-size:24px;font-weight:400;line-height:1}
+.ac-of{font-size:12px;color:var(--t2);padding-bottom:1px}
+.ac-note{font-size:12px;color:var(--t2);line-height:1.5}
+.sg{color:#3A9A3A}.sm{color:#B8830E}.sl{color:#C05A3A}
+
+/* loading */
+.dot{display:inline-block;animation:p 1.4s infinite}.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes p{0%,100%{opacity:.2}50%{opacity:1}}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-head">
+    <div class="logo"><div class="logo-dot"></div>Brand OS</div>
+    <div class="client-badge" style="margin-top:10px">
+      <div class="client-name" id="client-name-badge" style="font-size:13px;font-weight:500;color:var(--text);line-height:1.3">Cabri Caldwell</div>
+      <div class="client-type" id="client-type-badge" style="font-size:11px;color:var(--t2);margin-top:2px;letter-spacing:.01em">Minimize then Organize</div>
+    </div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Overview</div>
+    <button class="ni active" id="ni-dash" onclick="nav('dash')">
+      <svg class="ni-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>
+      Dashboard
+    </button>
+    <button class="ni" id="ni-audit" onclick="nav('audit')">
+      <svg class="ni-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>
+      Brand Audit
+      <span class="pct">72</span>
+    </button>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Pillars</div>
+    <button class="ni" id="ni-p1" onclick="openPillar(1)"><div class="pdot" style="background:var(--c1)"></div>Brand<span class="pct">85%</span></button>
+    <button class="ni" id="ni-p2" onclick="openPillar(2)"><div class="pdot" style="background:var(--c2)"></div>Messaging<span class="pct">60%</span></button>
+    <button class="ni" id="ni-p3" onclick="openPillar(3)"><div class="pdot" style="background:var(--c3)"></div>Activate<span class="pct">40%</span></button>
+    <button class="ni" id="ni-p4" onclick="openPillar(4)"><div class="pdot" style="background:var(--c4)"></div>Convert<span class="pct">20%</span></button>
+    <button class="ni" id="ni-p5" onclick="openPillar(5)"><div class="pdot" style="background:var(--c5)"></div>Automate<span class="pct">0%</span></button>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Resources</div>
+    <button class="ni" id="ni-studio" onclick="nav('studio')">
+      <svg class="ni-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="10" rx="2"/><path d="M5 7h6M5 9.5h4"/></svg>
+      Content Studio
+    </button>
+    <button class="ni" id="ni-dash-brand" onclick="nav('dash-brand')">
+      <svg class="ni-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12V6l6-4 6 4v6"/><path d="M6 16v-5h4v5"/><rect x="1" y="11" width="14" height="5" rx="1"/></svg>
+      Dashboards
+    </button>
+    <button class="ni" id="ni-res" onclick="nav('res')">
+      <svg class="ni-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h7l3 3v9H3V2z"/><path d="M10 2v3h3"/></svg>
+      Asset Vault
+    </button>
+  </div>
+  <!-- BRAND SWITCHER — rendered dynamically from CLIENT_CONFIG -->
+  <div class="brand-switcher">
+    <div class="bs-label">Your Brands</div>
+    <div id="brand-switcher-items">
+      <div class="brand-add" onclick="addBrand()">+ Add Brand</div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="crumb" id="crumb">Brand OS › <b>Dashboard</b></div>
+    <div class="tb-r">
+      <button class="btn btn-g btn-sm" onclick="jumpAI()">✦ Ask</button>
+      <button class="btn btn-p btn-sm">+ Add Asset</button>
+    </div>
+  </div>
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="view active" id="view-dash">
+      <div class="pg-title" id="dash-greeting">Good morning, there.</div>
+      <div class="pg-sub-wrap">
+        <div class="pg-sub visible" id="dash-sub">Great brands don't start with strategy. They start with conviction. Here's where yours stands.</div>
+      </div>
+      <div class="health-bar">
+        <div><div class="hs">72<small>/100</small></div></div>
+        <div class="hi"><div class="hl">Brand Health Score</div><div class="ht"><div class="hf" style="width:72%"></div></div><div class="hd">Strong visual identity · Messaging in progress · Activation and conversion not started · Automate not started</div></div>
+        <button class="btn btn-g btn-sm" onclick="nav('audit')">Full Audit →</button>
+      </div>
+      <div class="pg">
+        <div class="pc p1" onclick="openPillar(1)"><div class="pc-n">01</div><div class="pc-t">Brand</div><div class="pc-bar"><div class="pt"><div class="pf" style="width:85%"></div></div><div class="pc-pct">85%</div></div><div class="pc-s">Core Beliefs · Visual Identity · Story · Guidelines</div><div class="pc-arr">→</div></div>
+        <div class="pc p2" onclick="openPillar(2)"><div class="pc-n">02</div><div class="pc-t">Messaging</div><div class="pc-bar"><div class="pt"><div class="pf" style="width:60%"></div></div><div class="pc-pct">60%</div></div><div class="pc-s">Audience · Narrative · Channels · Keywords</div><div class="pc-arr">→</div></div>
+        <div class="pc p3" onclick="openPillar(3)"><div class="pc-n">03</div><div class="pc-t">Activate</div><div class="pc-bar"><div class="pt"><div class="pf" style="width:40%"></div></div><div class="pc-pct">40%</div></div><div class="pc-s">Channel-specific activation modules</div><div class="pc-arr">→</div></div>
+        <div class="pc p4" onclick="openPillar(4)"><div class="pc-n">04</div><div class="pc-t">Convert</div><div class="pc-bar"><div class="pt"><div class="pf" style="width:20%"></div></div><div class="pc-pct">20%</div></div><div class="pc-s">Build or audit your conversion system</div><div class="pc-arr">→</div></div>
+        <div class="pc p5" onclick="openPillar(5)"><div class="pc-n">05</div><div class="pc-t">Automate</div><div class="pc-bar"><div class="pt"><div class="pf" style="width:0%"></div></div><div class="pc-pct">0%</div></div><div class="pc-s">Find what to systematize and automate</div><div class="pc-arr">→</div></div>
+      </div>
+      <!-- BRAND FOUNDATION SNAPSHOT — current brand from sidebar switcher -->
+      <div class="card" id="brand-snapshot-card" style="margin-bottom:12px">
+        <div class="ch">
+          <div class="ct"><span id="bs-brand-name">Brand Snapshot</span> · Foundation</div>
+          <div class="cl" onclick="openPillar(1)">Open Brand pillar →</div>
+        </div>
+        <div id="brand-snapshot-body" style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:6px;font-size:13px;color:var(--t2);line-height:1.55"></div>
+      </div>
+      <div class="db-bot">
+        <div class="card">
+          <div class="ch"><div class="ct">Asset Vault</div><div class="cl" onclick="nav('res')">View all</div></div>
+          <div class="ar"><div class="ai-icon" style="background:#F0EBE8">🎨</div><div><div class="an">Brand Guidelines</div><div class="am">PDF · 2 days ago</div></div><div class="tag tb">Brand</div></div>
+          <div class="ar"><div class="ai-icon" style="background:#EAF0EA">📸</div><div><div class="an">Logo Suite</div><div class="am">ZIP · 12 files</div></div><div class="tag tb">Brand</div></div>
+          <div class="ar"><div class="ai-icon" style="background:#EAE8F5">📋</div><div><div class="an">Messaging Playbook</div><div class="am">In progress</div></div><div class="tag ts">Strategy</div></div>
+          <div class="ar"><div class="ai-icon" style="background:#E8F5F5">✏️</div><div><div class="an">Content Templates</div><div class="am">Canva · 8 templates</div></div><div class="tag tc">Content</div></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">✦ Brand Tools</div><div class="ai-badge">Brand OS</div></div>
+          <div class="mc" id="dash-chat"><div class="cm" id="dash-chat-opener">Hi Cabri — I'm pre-loaded with your five brands (Remove LBK, MTO, Ironclad, Organizer Near Me, Pro Organizer Studio). Switch brands in the sidebar, or ask me anything about strategy, next steps, or what to build next.</div></div>
+          <div class="ai-row" style="margin-top:8px">
+            <input type="text" id="dash-inp" placeholder="What should I focus on this week?" onkeydown="if(event.key==='Enter')dashSend()"/>
+            <button class="btn btn-b btn-sm" onclick="dashSend()">→</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PILLAR VIEW -->
+    <div class="view" id="view-pillar">
+      <div class="pl-head">
+        <div>
+          <div class="pl-meta"><div class="pdot-lg" id="pl-dot"></div><div class="pl-label" id="pl-lbl"></div></div>
+          <div class="pg-title" id="pl-title"></div>
+          <div style="font-size:13px;color:var(--t2)" id="pl-sub"></div>
+        </div>
+        <button class="btn btn-g btn-sm" onclick="nav('dash')">← Back</button>
+      </div>
+      <div id="pl-sections"></div>
+      <div id="pl-activate" style="display:none">
+        <div class="activate-note">Showing channels selected in <strong>Messaging → Channels</strong>. <span style="cursor:pointer;text-decoration:underline" onclick="openPillar(2)">Update →</span></div>
+        <div class="ch-grid" id="ch-grid"></div>
+      </div>
+      <div id="pl-convert" style="display:none">
+        <div class="tk-grid" id="tk-grid">
+          <div class="tk" onclick="selectTrack('build')"><div class="tk-icon">🏗️</div><div class="tk-t">Build from Scratch</div><div class="tk-d">No conversion tactics yet. Walk through building each piece step by step.</div></div>
+          <div class="tk" onclick="selectTrack('audit')"><div class="tk-icon">🔍</div><div class="tk-t">Audit What Exists</div><div class="tk-d">Have tactics but not converting. Diagnose what's broken and fix it.</div></div>
+        </div>
+        <div id="cv-steps-wrap" style="display:none"></div>
+      </div>
+      <div id="pl-automate" style="display:none">
+        <div class="auto-intro"><div class="auto-intro-t">Find Your Automation Opportunities</div><div class="auto-intro-d">Start by selecting every task that drains your time or energy. Then the AI analyzes your pain points alongside everything you've built across your brand pillars to surface your highest-impact automation opportunities — with specific tools and setup guidance.</div></div>
+        <div class="pain-section">
+          <div class="pain-title">What's draining you right now? Select everything that applies.</div>
+          <div class="pain-grid" id="pain-grid"></div>
+        </div>
+        <div class="auto-generate">
+          <button class="btn btn-p" onclick="generateAutoSuggestions()">✦ Generate My Automation Plan</button>
+          <span style="font-size:12px;color:var(--t3)" id="pain-count">0 pain points selected</span>
+        </div>
+        <div class="auto-results" id="auto-results"></div>
+        <div class="auto-ai-section" id="auto-ai" style="display:none">
+          <div class="ch" style="margin-bottom:10px"><div class="ct">✦ Go Deeper</div><div class="ai-badge">Brand OS</div></div>
+          <div class="ai-resp" id="auto-ai-resp"><span class="ai-italic">Ask me about any specific workflow, tool, or automation idea — I'll give you a step-by-step setup guide.</span></div>
+          <div class="ai-row">
+            <input type="text" id="auto-ai-inp" placeholder="How do I set up this automation in Zapier?" onkeydown="if(event.key==='Enter')autoAISend()"/>
+            <button class="btn btn-b btn-sm" onclick="autoAISend()">→</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION DETAIL -->
+    <div class="view" id="view-sec">
+      <button class="step-back" id="sec-back" onclick="goBackPillar()">← <span id="sec-back-lbl">Back</span></button>
+      <div class="pg-title" id="sec-title"></div>
+      <div class="pg-sub" id="sec-sub"></div>
+      <div class="step-tabs">
+        <button class="stab active" id="stb-learn" onclick="stTab('learn')">▶ Learn</button>
+        <button class="stab" id="stb-sheet" onclick="stTab('sheet')">✎ Worksheet</button>
+        <button class="stab" id="stb-ai" onclick="stTab('ai')">✦ Strategy Tools</button>
+      </div>
+      <div id="st-learn">
+        <div class="learn-media"><div class="lm-icon">🎬</div><div class="lm-title" id="lm-title">Video Lesson</div><div class="lm-sub">Add your video or podcast link for this section</div><button class="btn btn-g btn-sm">+ Add Media</button></div>
+        <div class="learn-key"><strong>Key Takeaway</strong><span id="lk-text"></span></div>
+      </div>
+      <div id="st-sheet" style="display:none"><div class="worksheet" id="ws-fields"></div><div class="save-r"><button class="btn btn-p btn-sm" onclick="saveWS()">Save Answers</button></div></div>
+      <div id="st-ai" style="display:none">
+        <div class="ai-panel">
+          <div class="ap-head"><div class="ct">✦ Strategy Tools</div><div class="ai-badge">Brand OS</div></div>
+          <div class="ai-resp" id="sec-ai-resp"><span class="ai-italic">I know your framework and your answers. Ask anything or use a prompt below.</span></div>
+          <div class="chips" id="sec-chips"></div>
+          <div class="ai-row"><input type="text" id="sec-ai-inp" placeholder="Ask or describe what you need..." onkeydown="if(event.key==='Enter')secSend()"/><button class="btn btn-b btn-sm" onclick="secSend()">→</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTENT STUDIO -->
+    <div class="view" id="view-studio">
+      <div class="studio-header">
+        <div class="studio-title">Content Studio</div>
+        <div class="studio-sub">Content that sells, without selling. Your complete content framework in one place.</div>
+      </div>
+      <div class="studio-nav">
+        <button class="snav active" id="snav-audience" onclick="studioNav('audience')">Audience</button>
+        <button class="snav" id="snav-loop" onclick="studioNav('loop')">The Loop</button>
+        <button class="snav" id="snav-strategy" onclick="studioNav('strategy')">Strategy</button>
+        <button class="snav" id="snav-formats" onclick="studioNav('formats')">Formats</button>
+        <button class="snav" id="snav-mix" onclick="studioNav('mix')">Format Mix</button>
+        <button class="snav" id="snav-sells" onclick="studioNav('sells')">Content That Sells</button>
+        <button class="snav" id="snav-gen" onclick="studioNav('gen')">✦ Generate</button>
+      </div>
+      <!-- AUDIENCE — connected to Messaging → Audience -->
+      <div id="s-audience">
+        <div class="pg-title" style="margin-bottom:6px">Find Your Audience</div>
+        <div class="pg-sub">Define the problem, and speak to the people who have that problem.</div>
+        <div id="studio-audience-content"></div>
+      </div>
+      <!-- LOOP -->
+      <div id="s-loop" style="display:none">
+        <div class="pg-title" style="margin-bottom:6px">Build the Loop</div>
+        <div class="pg-sub">Together they mirror exactly where your audience lives. Create curiosity that feeds the loop.</div>
+        <div class="loop-diagram">
+          <div class="loop-card"><div class="loop-icon">🔍</div><div class="loop-t">The Problem</div><div class="loop-sub">feel seen & understood</div><div class="loop-d">Content that names the frustration your audience feels but hasn't been able to articulate. This is where they stop scrolling.</div></div>
+          <div class="loop-card"><div class="loop-icon">🧭</div><div class="loop-t">The Journey</div><div class="loop-sub">trust & expectation</div><div class="loop-d">Content that shows the path forward and demonstrates that you know the way. This is where they start following.</div></div>
+          <div class="loop-card"><div class="loop-icon">✨</div><div class="loop-t">The Aspiration</div><div class="loop-sub">hope from a solution</div><div class="loop-d">Content that paints the life on the other side. This is where they become buyers — because they can see themselves in the outcome.</div></div>
+        </div>
+        <div class="card">
+          <div class="ct" style="margin-bottom:10px">Map your content to the loop</div>
+          <div class="worksheet">
+            <div class="fg"><div class="fl">Write a Problem post idea for your audience</div><input class="field-input" placeholder="e.g. 'You've organized your closet 3 times and it's still chaos. Here's why.'"/></div>
+            <div class="fg"><div class="fl">Write a Journey post idea</div><input class="field-input" placeholder="e.g. 'What actually happens in the first 2 hours of a luxury home edit'"/></div>
+            <div class="fg"><div class="fl">Write an Aspiration post idea</div><input class="field-input" placeholder="e.g. 'Imagine opening your pantry every morning and feeling calm'"/></div>
+          </div>
+          <div class="save-r" style="margin-top:12px"><button class="btn btn-b btn-sm" onclick="generateLoopContent()">✦ Generate posts from these ideas</button></div>
+          <div class="gen-out" id="loop-out" style="display:none"></div>
+        </div>
+      </div>
+      <!-- STRATEGY / CONTENT FRAMEWORK -->
+      <div id="s-strategy" style="display:none">
+        <div class="pg-title" style="margin-bottom:6px">Content Framework</div>
+        <div class="pg-sub">Calendars are downstream. Your content framework is three things, in order: <strong>Audience + Format + Cadence</strong>. Lock these and the calendar writes itself — and the Generator feeds off it.</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px">
+          <div class="card" style="text-align:center"><div style="font-size:22px;margin-bottom:8px">👥</div><div style="font-size:14px;font-weight:500;margin-bottom:4px">Audience</div><div style="font-size:12px;color:var(--t2)">Who you're talking to and the loop they live in</div></div>
+          <div class="card" style="text-align:center"><div style="font-size:22px;margin-bottom:8px">🎬</div><div style="font-size:14px;font-weight:500;margin-bottom:4px">Format</div><div style="font-size:12px;color:var(--t2)">How you naturally communicate + the content types that fit</div></div>
+          <div class="card" style="text-align:center"><div style="font-size:22px;margin-bottom:8px">🔁</div><div style="font-size:14px;font-weight:500;margin-bottom:4px">Cadence</div><div style="font-size:12px;color:var(--t2)">How often you publish — and why that rhythm fits your audience</div></div>
+        </div>
+        <div class="card">
+          <div class="ct" style="margin-bottom:12px">Build Your Content Framework</div>
+          <div class="worksheet" id="framework-fields">
+            <div class="fg" data-fw="formats"><div class="fl">How do you communicate most naturally?</div><div class="fh">This determines your best formats — pick all that genuinely apply.</div><div class="fopts"><button class="opt" onclick="this.classList.toggle('sel')">On camera / video</button><button class="opt" onclick="this.classList.toggle('sel')">Writing / captions</button><button class="opt" onclick="this.classList.toggle('sel')">Visual / aesthetic</button><button class="opt" onclick="this.classList.toggle('sel')">Teaching / education</button><button class="opt" onclick="this.classList.toggle('sel')">Behind the scenes</button><button class="opt" onclick="this.classList.toggle('sel')">Storytelling</button></div></div>
+            <div class="fg" data-fw="cadence"><div class="fl">How often will you publish — and when?</div><div class="fh">Pick the rhythm you can actually keep. Consistency beats volume.</div><div class="fopts"><button class="opt" onclick="this.classList.toggle('sel')">Daily</button><button class="opt" onclick="this.classList.toggle('sel')">3x / week</button><button class="opt" onclick="this.classList.toggle('sel')">2x / week</button><button class="opt" onclick="this.classList.toggle('sel')">Weekly</button><button class="opt" onclick="this.classList.toggle('sel')">2x / month</button></div></div>
+            <div class="fg" data-fw="goal"><div class="fl">What is your content goal right now?</div><div class="fopts"><button class="opt" onclick="this.classList.toggle('sel')">Grow audience</button><button class="opt" onclick="this.classList.toggle('sel')">Build authority</button><button class="opt" onclick="this.classList.toggle('sel')">Drive bookings</button><button class="opt" onclick="this.classList.toggle('sel')">Nurture existing audience</button></div></div>
+          </div>
+          <div class="save-r" style="margin-top:12px;align-items:center;gap:10px"><span id="fw-saved-note" style="font-size:12px;color:var(--t3)"></span><button class="btn btn-p btn-sm" onclick="saveContentFramework()">Save Framework</button></div>
+        </div>
+        <div class="learn-key" style="margin-top:14px"><strong>End Goal</strong>Your saved framework auto-feeds the <span style="cursor:pointer;text-decoration:underline" onclick="studioNav('gen')">✦ Generate</span> tab. Every content idea, hook, and post the generator produces uses your audience, your formats, and your cadence — for the brand you're currently working on.</div>
+      </div>
+      <!-- FORMATS -->
+      <div id="s-formats" style="display:none">
+        <div class="pg-title" style="margin-bottom:6px">Formats</div>
+        <div class="pg-sub">You don't need every format. You need one that matches how you naturally communicate, from each category.</div>
+        <div class="fmt-grid">
+          <div class="fmt-card">
+            <div class="fmt-head reach" style="color:var(--c1)">🚀 Reach Formats</div>
+            <div class="fmt-row"><div class="fmt-name">Short Reel / TikTok</div><div class="fmt-plat">Both</div></div>
+            <div class="fmt-row"><div class="fmt-name">Trend audio video</div><div class="fmt-plat">TikTok</div></div>
+            <div class="fmt-row"><div class="fmt-name">Hot take</div><div class="fmt-plat">Both</div></div>
+            <div class="fmt-row"><div class="fmt-name">Stitch / Duet</div><div class="fmt-plat">TikTok</div></div>
+            <div class="fmt-row"><div class="fmt-name">Collab post</div><div class="fmt-plat">Instagram</div></div>
+          </div>
+          <div class="fmt-card">
+            <div class="fmt-head retention" style="color:var(--c2)">🔗 Retention Formats</div>
+            <div class="fmt-row"><div class="fmt-name">Carousel</div><div class="fmt-plat">Instagram</div></div>
+            <div class="fmt-row"><div class="fmt-name">Story series</div><div class="fmt-plat">Instagram</div></div>
+            <div class="fmt-row"><div class="fmt-name">Educational series</div><div class="fmt-plat">Both</div></div>
+            <div class="fmt-row"><div class="fmt-name">Behind the scenes</div><div class="fmt-plat">Both</div></div>
+            <div class="fmt-row"><div class="fmt-name">Response videos</div><div class="fmt-plat">TikTok</div></div>
+          </div>
+          <div class="fmt-card">
+            <div class="fmt-head conversion" style="color:var(--c4)">💰 Conversion Formats</div>
+            <div class="fmt-row"><div class="fmt-name">Pinned intro video</div><div class="fmt-plat">Both</div></div>
+            <div class="fmt-row"><div class="fmt-name">Testimonial / result</div><div class="fmt-plat">Both</div></div>
+            <div class="fmt-row"><div class="fmt-name">Direct CTA post</div><div class="fmt-plat">Both</div></div>
+            <div class="fmt-row"><div class="fmt-name">Bio optimization</div><div class="fmt-plat">Both</div></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <div class="learn-key"><strong>The Rule for Formats</strong>Pick formats that match how you naturally communicate first. If you hate being on camera a talking head video will always feel forced — and the audience will feel it. If you're a writer, lead with carousels. If you're visual, lead with aesthetic Reels. Your best format is almost always the one that feels most like you.</div>
+        </div>
+      </div>
+      <!-- FORMAT MIX -->
+      <div id="s-mix" style="display:none">
+        <div class="pg-title" style="margin-bottom:6px">Format Mix</div>
+        <div class="pg-sub">You don't need every format. You need one from each category rotating through your content week.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="card">
+            <div class="ct" style="margin-bottom:12px">The Format Mix That Works for Most Creators</div>
+            <table style="width:100%;border-collapse:collapse;font-size:12px">
+              <tr style="border-bottom:1px solid var(--border)"><th style="text-align:left;padding:6px 4px;color:var(--t3);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.05em">Day</th><th style="text-align:left;padding:6px 4px;color:var(--t3);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.05em">Format</th><th style="text-align:left;padding:6px 4px;color:var(--t3);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.05em">Purpose</th></tr>
+              <tr style="border-bottom:1px solid var(--s2)"><td style="padding:7px 4px">Monday</td><td style="padding:7px 4px;font-weight:500">Reel</td><td style="padding:7px 4px;color:var(--t2)">Find new people</td></tr>
+              <tr style="border-bottom:1px solid var(--s2)"><td style="padding:7px 4px">Wednesday</td><td style="padding:7px 4px;font-weight:500">Carousel</td><td style="padding:7px 4px;color:var(--t2)">Build authority</td></tr>
+              <tr style="border-bottom:1px solid var(--s2)"><td style="padding:7px 4px">Friday</td><td style="padding:7px 4px;font-weight:500">Reel or TikTok</td><td style="padding:7px 4px;color:var(--t2)">End of week push</td></tr>
+              <tr style="border-bottom:1px solid var(--s2)"><td style="padding:7px 4px">Daily</td><td style="padding:7px 4px;font-weight:500">Stories</td><td style="padding:7px 4px;color:var(--t2)">Stay top of mind</td></tr>
+              <tr><td style="padding:7px 4px">As needed</td><td style="padding:7px 4px;font-weight:500">Response video</td><td style="padding:7px 4px;color:var(--t2)">Build trust</td></tr>
+            </table>
+          </div>
+          <div>
+            <div class="card" style="margin-bottom:10px">
+              <div class="ct" style="margin-bottom:8px">Build Your Mix</div>
+              <div class="worksheet">
+                <div class="fg"><div class="fl">Your Reach format</div><input class="field-input" placeholder="e.g. Short Reel 3x/week"/></div>
+                <div class="fg"><div class="fl">Your Retention format</div><input class="field-input" placeholder="e.g. Carousel 1x/week"/></div>
+                <div class="fg"><div class="fl">Your Conversion format</div><input class="field-input" placeholder="e.g. Testimonial post 2x/month"/></div>
+              </div>
+              <div class="save-r" style="margin-top:10px"><button class="btn btn-p btn-sm">Save My Mix</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- CONTENT THAT SELLS -->
+      <div id="s-sells" style="display:none">
+        <div class="pg-title" style="margin-bottom:6px">Content That Sells, Without Selling</div>
+        <div class="pg-sub">Three types of content that create trust and desire before you ever make an offer.</div>
+        <div class="sells-grid" style="margin-bottom:18px">
+          <div class="sells-card"><div class="sells-num">1.</div><div class="sells-t">Belief</div><div class="sells-d">Illustrating the worldview, addressing the problem. This content makes people feel seen and builds the foundation of trust.</div></div>
+          <div class="sells-card"><div class="sells-num">2.</div><div class="sells-t">Proof</div><div class="sells-d">Process over outcome — strong specific results over generic outcomes. Show the work, not just the transformation.</div></div>
+          <div class="sells-card"><div class="sells-num">3.</div><div class="sells-t">Opportunity</div><div class="sells-d">Use the curiosity loop, invite them in — don't boss them around. The CTA is an invitation, not a command.</div></div>
+        </div>
+        <div class="card">
+          <div class="ct" style="margin-bottom:12px">Plan your next Belief, Proof, and Opportunity posts</div>
+          <div class="worksheet">
+            <div class="fg"><div class="fl">Belief post idea</div><div class="fh">What worldview or problem will you address?</div><textarea class="field-input" placeholder="e.g. Most people think they need more storage. They actually need less stuff and a system."></textarea></div>
+            <div class="fg"><div class="fl">Proof post idea</div><div class="fh">What process or specific result can you show?</div><textarea class="field-input" placeholder="e.g. Before/after of a pantry edit — show each step, not just the final photo."></textarea></div>
+            <div class="fg"><div class="fl">Opportunity post idea</div><div class="fh">How will you invite them in without bossing them around?</div><textarea class="field-input" placeholder="e.g. 'If you've been thinking about finally tackling your garage — this is your sign.'"></textarea></div>
+          </div>
+          <div class="save-r" style="margin-top:12px"><button class="btn btn-b btn-sm" onclick="generateSellsContent()">✦ Generate these 3 posts</button></div>
+          <div class="gen-out" id="sells-out" style="display:none"></div>
+        </div>
+      </div>
+      <!-- GENERATE -->
+      <div id="s-gen" style="display:none">
+        <div class="pg-title" style="margin-bottom:6px">✦ Content Idea Generator</div>
+        <div class="pg-sub">Pulls directly from your saved Content Framework — audience, formats, cadence — for the brand you're currently working on. Update the framework anytime and this regenerates against the new inputs.</div>
+        <div id="gen-framework-preview" style="background:var(--bl);border-left:3px solid var(--brand);border-radius:var(--rs);padding:10px 14px;margin-bottom:14px"></div>
+        <div class="gen-section">
+          <div class="gen-title">What do you want to create?</div>
+          <div class="gen-type-row">
+            <button class="opt" onclick="this.classList.toggle('sel')">Instagram caption</button>
+            <button class="opt" onclick="this.classList.toggle('sel')">TikTok hook</button>
+            <button class="opt" onclick="this.classList.toggle('sel')">Carousel script</button>
+            <button class="opt" onclick="this.classList.toggle('sel')">Email newsletter</button>
+            <button class="opt" onclick="this.classList.toggle('sel')">Story sequence</button>
+            <button class="opt" onclick="this.classList.toggle('sel')">30-day idea bank</button>
+            <button class="opt" onclick="this.classList.toggle('sel')">Content hooks (10x)</button>
+          </div>
+          <div class="fg" style="margin-top:10px"><div class="fl">What's the topic or angle?</div><input class="field-input" id="gen-topic" placeholder="e.g. Why my clients' homes feel different after an edit..." onkeydown="if(event.key==='Enter')studioGenerate()"/></div>
+          <div style="margin-top:10px;display:flex;gap:8px">
+            <button class="btn btn-p" onclick="studioGenerate()">✦ Generate</button>
+            <button class="btn btn-g btn-sm" onclick="document.getElementById('gen-topic').value='';document.getElementById('gen-out').style.display='none'">Clear</button>
+          </div>
+          <div class="gen-out" id="gen-out" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BRAND DASHBOARDS -->
+    <div class="view" id="view-dash-brand">
+      <div class="pg-title">Brand Dashboards</div>
+      <div class="pg-sub">A live picture of your brand health — updated as you build.</div>
+
+      <div class="db-view-tabs">
+        <button class="dbtab active" id="dbt-overview" onclick="dbTab('overview')">Overview</button>
+        <button class="dbtab" id="dbt-brand" onclick="dbTab('brand')">Brand</button>
+        <button class="dbtab" id="dbt-messaging" onclick="dbTab('messaging')">Messaging</button>
+        <button class="dbtab" id="dbt-activate" onclick="dbTab('activate')">Activate</button>
+        <button class="dbtab" id="dbt-convert" onclick="dbTab('convert')">Convert</button>
+        <button class="dbtab" id="dbt-automate" onclick="dbTab('automate')">Automate</button>
+      </div>
+
+      <!-- OVERVIEW TAB -->
+      <div id="db-overview">
+        <!-- Sparkline health score -->
+        <div class="sparkline-card">
+          <div class="spark-head">
+            <div>
+              <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:4px">Overall Brand Health</div>
+              <div style="display:flex;align-items:flex-end;gap:10px">
+                <div class="spark-score">72</div>
+                <div>
+                  <div class="spark-delta delta-up">↑ +8 this month</div>
+                  <div class="spark-label">out of 100</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <svg class="spark-svg" viewBox="0 0 400 48" preserveAspectRatio="none">
+            <polyline points="0,40 50,38 100,34 150,30 200,28 250,22 300,18 350,14 400,10" fill="none" stroke="var(--s3)" stroke-width="2"/>
+            <polyline points="0,40 50,38 100,34 150,30 200,28 250,22 300,18 350,14 400,10" fill="none" stroke="var(--brand)" stroke-width="2.5" stroke-dasharray="none"/>
+            <circle cx="400" cy="10" r="4" fill="var(--brand)"/>
+            <text x="2" y="47" font-size="9" fill="var(--t3)" font-family="DM Sans">6 months ago</text>
+            <text x="340" y="47" font-size="9" fill="var(--t3)" font-family="DM Sans">Today</text>
+          </svg>
+        </div>
+
+        <!-- 5 pillar rings -->
+        <div class="score-rings">
+          <div class="ring-card" onclick="dbTab('brand')">
+            <div class="ring-wrap">
+              <svg class="ring-svg" width="56" height="56" viewBox="0 0 56 56">
+                <circle class="ring-bg" cx="28" cy="28" r="22"/>
+                <circle class="ring-fill" cx="28" cy="28" r="22" stroke="var(--c1)" stroke-dasharray="138.2" stroke-dashoffset="20.7"/>
+              </svg>
+              <div class="ring-num">85</div>
+            </div>
+            <div class="ring-label">Brand</div>
+            <div class="ring-sub">85% complete</div>
+          </div>
+          <div class="ring-card" onclick="dbTab('messaging')">
+            <div class="ring-wrap">
+              <svg class="ring-svg" width="56" height="56" viewBox="0 0 56 56">
+                <circle class="ring-bg" cx="28" cy="28" r="22"/>
+                <circle class="ring-fill" cx="28" cy="28" r="22" stroke="var(--c2)" stroke-dasharray="138.2" stroke-dashoffset="55.3"/>
+              </svg>
+              <div class="ring-num">60</div>
+            </div>
+            <div class="ring-label">Messaging</div>
+            <div class="ring-sub">60% complete</div>
+          </div>
+          <div class="ring-card" onclick="dbTab('activate')">
+            <div class="ring-wrap">
+              <svg class="ring-svg" width="56" height="56" viewBox="0 0 56 56">
+                <circle class="ring-bg" cx="28" cy="28" r="22"/>
+                <circle class="ring-fill" cx="28" cy="28" r="22" stroke="var(--c3)" stroke-dasharray="138.2" stroke-dashoffset="82.9"/>
+              </svg>
+              <div class="ring-num">40</div>
+            </div>
+            <div class="ring-label">Activate</div>
+            <div class="ring-sub">40% complete</div>
+          </div>
+          <div class="ring-card" onclick="dbTab('convert')">
+            <div class="ring-wrap">
+              <svg class="ring-svg" width="56" height="56" viewBox="0 0 56 56">
+                <circle class="ring-bg" cx="28" cy="28" r="22"/>
+                <circle class="ring-fill" cx="28" cy="28" r="22" stroke="var(--c4)" stroke-dasharray="138.2" stroke-dashoffset="110.6"/>
+              </svg>
+              <div class="ring-num">20</div>
+            </div>
+            <div class="ring-label">Convert</div>
+            <div class="ring-sub">20% complete</div>
+          </div>
+          <div class="ring-card" onclick="dbTab('automate')">
+            <div class="ring-wrap">
+              <svg class="ring-svg" width="56" height="56" viewBox="0 0 56 56">
+                <circle class="ring-bg" cx="28" cy="28" r="22"/>
+                <circle class="ring-fill" cx="28" cy="28" r="22" stroke="var(--c5)" stroke-dasharray="138.2" stroke-dashoffset="138.2"/>
+              </svg>
+              <div class="ring-num">0</div>
+            </div>
+            <div class="ring-label">Automate</div>
+            <div class="ring-sub">Not started</div>
+          </div>
+        </div>
+
+        <!-- Key metrics -->
+        <div class="metric-grid">
+          <div class="metric-card">
+            <div class="metric-label">Content Consistency</div>
+            <div class="metric-val" style="color:var(--brand)">3/7</div>
+            <div class="metric-sub">days active this week</div>
+            <div class="metric-bar"><div class="metric-bar-fill" style="width:43%;background:var(--brand)"></div></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Conversion Readiness</div>
+            <div class="metric-val" style="color:var(--c4)">2/6</div>
+            <div class="metric-sub">funnel stages complete</div>
+            <div class="metric-bar"><div class="metric-bar-fill" style="width:33%;background:var(--c4)"></div></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Automations Active</div>
+            <div class="metric-val" style="color:var(--c5)">0/8</div>
+            <div class="metric-sub">recommended for your brand</div>
+            <div class="metric-bar"><div class="metric-bar-fill" style="width:0%;background:var(--c5)"></div></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Assets Complete</div>
+            <div class="metric-val" style="color:var(--c1)">4/9</div>
+            <div class="metric-sub">brand assets in vault</div>
+            <div class="metric-bar"><div class="metric-bar-fill" style="width:44%;background:var(--c1)"></div></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Audience Definition</div>
+            <div class="metric-val" style="color:var(--c2)">Strong</div>
+            <div class="metric-sub">ideal client defined</div>
+            <div class="metric-bar"><div class="metric-bar-fill" style="width:80%;background:var(--c2)"></div></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Brand Clarity Score</div>
+            <div class="metric-val" style="color:var(--c1)">72</div>
+            <div class="metric-sub">based on completed sections</div>
+            <div class="metric-bar"><div class="metric-bar-fill" style="width:72%;background:var(--c1)"></div></div>
+          </div>
+        </div>
+
+        <!-- Weekly Pulse + Monthly Report side by side -->
+        <div class="metrics-input-card">
+          <div class="metrics-input-head">
+            <div class="pulse-title">📥 Log This Week's Numbers</div>
+            <div style="font-size:11px;color:var(--t3)">Tracked weekly · Brand OS analyzes trends</div>
+          </div>
+          <div class="metrics-platform-tabs">
+            <button class="ptab active" id="ptab-instagram" onclick="switchPlatformTab('instagram')">📸 Instagram</button>
+            <button class="ptab" id="ptab-tiktok" onclick="switchPlatformTab('tiktok')">🎵 TikTok</button>
+            <button class="ptab" id="ptab-email" onclick="switchPlatformTab('email')">✉️ Email</button>
+            <button class="ptab" id="ptab-linkedin" onclick="switchPlatformTab('linkedin')">💼 LinkedIn</button>
+          </div>
+
+          <!-- Instagram fields -->
+          <div id="pfields-instagram">
+            <div class="metrics-fields">
+              <div class="mf"><div class="mf-label">Followers</div><input class="mf-input" id="ig-followers" type="number" placeholder="e.g. 2,840"/></div>
+              <div class="mf"><div class="mf-label">Reach this week</div><input class="mf-input" id="ig-reach" type="number" placeholder="e.g. 4,200"/></div>
+              <div class="mf"><div class="mf-label">Avg. Engagement Rate</div><input class="mf-input" id="ig-eng" type="number" placeholder="e.g. 3.8" step="0.1"/></div>
+              <div class="mf"><div class="mf-label">Posts published</div><input class="mf-input" id="ig-posts" type="number" placeholder="e.g. 4"/></div>
+              <div class="mf"><div class="mf-label">Profile visits</div><input class="mf-input" id="ig-visits" type="number" placeholder="e.g. 380"/></div>
+              <div class="mf"><div class="mf-label">Link clicks</div><input class="mf-input" id="ig-clicks" type="number" placeholder="e.g. 42"/></div>
+            </div>
+          </div>
+
+          <!-- TikTok fields -->
+          <div id="pfields-tiktok" style="display:none">
+            <div class="metrics-fields">
+              <div class="mf"><div class="mf-label">Followers</div><input class="mf-input" id="tt-followers" type="number" placeholder="e.g. 1,200"/></div>
+              <div class="mf"><div class="mf-label">Video views this week</div><input class="mf-input" id="tt-views" type="number" placeholder="e.g. 8,500"/></div>
+              <div class="mf"><div class="mf-label">Avg. Watch time (sec)</div><input class="mf-input" id="tt-watch" type="number" placeholder="e.g. 12"/></div>
+              <div class="mf"><div class="mf-label">Videos posted</div><input class="mf-input" id="tt-posts" type="number" placeholder="e.g. 3"/></div>
+              <div class="mf"><div class="mf-label">Likes</div><input class="mf-input" id="tt-likes" type="number" placeholder="e.g. 340"/></div>
+              <div class="mf"><div class="mf-label">Shares</div><input class="mf-input" id="tt-shares" type="number" placeholder="e.g. 28"/></div>
+            </div>
+          </div>
+
+          <!-- Email fields -->
+          <div id="pfields-email" style="display:none">
+            <div class="metrics-fields">
+              <div class="mf"><div class="mf-label">Subscribers</div><input class="mf-input" id="em-subs" type="number" placeholder="e.g. 640"/></div>
+              <div class="mf"><div class="mf-label">Open rate (%)</div><input class="mf-input" id="em-open" type="number" placeholder="e.g. 42.5" step="0.1"/></div>
+              <div class="mf"><div class="mf-label">Click rate (%)</div><input class="mf-input" id="em-click" type="number" placeholder="e.g. 8.2" step="0.1"/></div>
+              <div class="mf"><div class="mf-label">Emails sent</div><input class="mf-input" id="em-sent" type="number" placeholder="e.g. 1"/></div>
+              <div class="mf"><div class="mf-label">New subscribers</div><input class="mf-input" id="em-new" type="number" placeholder="e.g. 14"/></div>
+              <div class="mf"><div class="mf-label">Unsubscribes</div><input class="mf-input" id="em-unsub" type="number" placeholder="e.g. 2"/></div>
+            </div>
+          </div>
+
+          <!-- LinkedIn fields -->
+          <div id="pfields-linkedin" style="display:none">
+            <div class="metrics-fields">
+              <div class="mf"><div class="mf-label">Connections / Followers</div><input class="mf-input" id="li-followers" type="number" placeholder="e.g. 1,840"/></div>
+              <div class="mf"><div class="mf-label">Post impressions</div><input class="mf-input" id="li-impressions" type="number" placeholder="e.g. 2,200"/></div>
+              <div class="mf"><div class="mf-label">Engagement rate (%)</div><input class="mf-input" id="li-eng" type="number" placeholder="e.g. 4.1" step="0.1"/></div>
+              <div class="mf"><div class="mf-label">Posts published</div><input class="mf-input" id="li-posts" type="number" placeholder="e.g. 2"/></div>
+              <div class="mf"><div class="mf-label">Profile views</div><input class="mf-input" id="li-visits" type="number" placeholder="e.g. 120"/></div>
+              <div class="mf"><div class="mf-label">New connections</div><input class="mf-input" id="li-new" type="number" placeholder="e.g. 18"/></div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:10px">
+            <button class="btn btn-p btn-sm" onclick="saveMetrics()">Save This Week</button>
+            <button class="btn btn-b btn-sm" onclick="analyzeMetrics()">✦ Analyze Trends</button>
+            <span style="font-size:11px;color:var(--t3)" id="metrics-saved-msg"></span>
+          </div>
+
+          <!-- History table -->
+          <div class="metrics-history" id="metrics-history-wrap" style="display:none">
+            <div class="mh-label">Recent History</div>
+            <table class="mh-table" id="metrics-history-table"></table>
+          </div>
+
+          <!-- AI analysis -->
+          <div id="metrics-ai-out" style="display:none;margin-top:12px">
+            <div style="background:var(--s2);border-radius:var(--rs);padding:12px;font-size:13px;color:var(--text);line-height:1.6" id="metrics-ai-text"></div>
+          </div>
+        </div>
+
+        <!-- Weekly Pulse + Monthly Report side by side -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <!-- Weekly Pulse -->
+          <div class="pulse-card">
+            <div class="pulse-head">
+              <div class="pulse-title">⚡ Weekly Pulse</div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <div class="pulse-date">Week of May 15</div>
+                <button class="btn btn-g btn-sm" onclick="generatePulse()">Refresh</button>
+              </div>
+            </div>
+            <div class="pulse-items" id="pulse-items">
+              <div class="pulse-item good"><div class="pulse-dot"></div>Brand identity is strong — visual consistency is your biggest asset right now.</div>
+              <div class="pulse-item warn"><div class="pulse-dot"></div>Content went quiet mid-week. One reel this weekend keeps momentum going.</div>
+              <div class="pulse-item act"><div class="pulse-dot"></div>Highest-leverage move: finish your Messaging Playbook — it unlocks Activate and Convert.</div>
+            </div>
+          </div>
+
+          <!-- Monthly Report -->
+          <div class="report-card">
+            <div class="report-head">
+              <div class="pulse-title">📋 Monthly Brand Report</div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <div class="pulse-date">May 2026</div>
+                <button class="btn btn-p btn-sm" onclick="generateReport()">✦ Generate</button>
+              </div>
+            </div>
+            <div id="report-content">
+              <div class="report-locked">
+                <div class="report-locked-icon">📊</div>
+                <div style="font-size:13px;font-weight:500;margin-bottom:4px">Generate your May report</div>
+                <div style="font-size:12px;color:var(--t3);max-width:260px;margin:0 auto">A full diagnostic of your brand health, what moved this month, and your single highest-leverage focus for June.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PILLAR DETAIL TABS (Brand, Messaging, etc.) -->
+      <div id="db-brand" style="display:none">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:18px">
+          <div style="width:10px;height:10px;border-radius:3px;background:var(--c1)"></div>
+          <div class="pg-title" style="margin-bottom:0;font-size:18px">Brand Pillar Dashboard</div>
+        </div>
+        <div class="pillar-dash-grid">
+          <div class="pd-card">
+            <div class="pd-label">Section Health</div>
+            <div class="pd-items">
+              <div class="pd-row"><div class="pd-check">✓</div><div class="pd-name">Core Beliefs</div><div class="pd-status st-done">Complete</div></div>
+              <div class="pd-row"><div class="pd-check">✓</div><div class="pd-name">Visual Identity</div><div class="pd-status st-done">Complete</div></div>
+              <div class="pd-row"><div class="pd-check">◐</div><div class="pd-name">Brand Story</div><div class="pd-status st-prog">In Progress</div></div>
+              <div class="pd-row"><div class="pd-check">○</div><div class="pd-name">Brand Guidelines</div><div class="pd-status st-todo">Not Started</div></div>
+            </div>
+          </div>
+          <div class="pd-card">
+            <div class="pd-label">Identity Consistency</div>
+            <div style="font-family:'Playfair Display',serif;font-size:32px;font-weight:400;margin-bottom:4px;color:var(--c1)">92</div>
+            <div style="font-size:12px;color:var(--t2);margin-bottom:10px">Visual identity score</div>
+            <div class="metric-bar"><div class="metric-bar-fill" style="width:92%;background:var(--c1)"></div></div>
+            <div style="font-size:12px;color:var(--t2);margin-top:8px">Strong logo system · Consistent palette · Story needs completion</div>
+          </div>
+        </div>
+        <div class="pulse-card">
+          <div class="pulse-head"><div class="pulse-title">✦ Brand Pillar Insights</div><button class="btn btn-g btn-sm" onclick="generatePillarInsight('Brand')">Refresh</button></div>
+          <div id="db-brand-insight" class="pulse-items">
+            <div class="pulse-item good"><div class="pulse-dot"></div>Your visual identity is your strongest brand asset — it's recognizable and consistent across touchpoints.</div>
+            <div class="pulse-item act"><div class="pulse-dot"></div>Complete your Brand Story to unlock the full emotional connection your audience needs to trust you.</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="db-messaging" style="display:none">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:18px">
+          <div style="width:10px;height:10px;border-radius:3px;background:var(--c2)"></div>
+          <div class="pg-title" style="margin-bottom:0;font-size:18px">Messaging Pillar Dashboard</div>
+        </div>
+        <div class="pillar-dash-grid">
+          <div class="pd-card">
+            <div class="pd-label">Section Health</div>
+            <div class="pd-items">
+              <div class="pd-row"><div class="pd-check">✓</div><div class="pd-name">Audience</div><div class="pd-status st-done">Complete</div></div>
+              <div class="pd-row"><div class="pd-check">◐</div><div class="pd-name">Narrative</div><div class="pd-status st-prog">In Progress</div></div>
+              <div class="pd-row"><div class="pd-check">◐</div><div class="pd-name">Channels</div><div class="pd-status st-prog">In Progress</div></div>
+              <div class="pd-row"><div class="pd-check">○</div><div class="pd-name">Keywords</div><div class="pd-status st-todo">Not Started</div></div>
+            </div>
+          </div>
+          <div class="pd-card">
+            <div class="pd-label">Message Clarity</div>
+            <div style="font-family:'Playfair Display',serif;font-size:32px;font-weight:400;margin-bottom:4px;color:var(--c2)">55</div>
+            <div style="font-size:12px;color:var(--t2);margin-bottom:10px">Clarity score</div>
+            <div class="metric-bar"><div class="metric-bar-fill" style="width:55%;background:var(--c2)"></div></div>
+            <div style="font-size:12px;color:var(--t2);margin-top:8px">Audience defined · Value prop needs sharpening · Keywords not yet documented</div>
+          </div>
+        </div>
+        <div class="pulse-card">
+          <div class="pulse-head"><div class="pulse-title">✦ Messaging Pillar Insights</div><button class="btn btn-g btn-sm" onclick="generatePillarInsight('Messaging')">Refresh</button></div>
+          <div id="db-messaging-insight" class="pulse-items">
+            <div class="pulse-item good"><div class="pulse-dot"></div>Audience definition is strong — you know exactly who you're talking to.</div>
+            <div class="pulse-item warn"><div class="pulse-dot"></div>Your value proposition needs one more pass — it should fit in a single breath.</div>
+            <div class="pulse-item act"><div class="pulse-dot"></div>Document your keywords next — they'll make every caption, email, and headline write faster.</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="db-activate" style="display:none">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:18px">
+          <div style="width:10px;height:10px;border-radius:3px;background:var(--c3)"></div>
+          <div class="pg-title" style="margin-bottom:0;font-size:18px">Activate Pillar Dashboard</div>
+        </div>
+        <div class="metric-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="metric-card"><div class="metric-label">Channels Active</div><div class="metric-val" style="color:var(--c3)">2</div><div class="metric-sub">Instagram · Email</div><div class="metric-bar"><div class="metric-bar-fill" style="width:33%;background:var(--c3)"></div></div></div>
+          <div class="metric-card"><div class="metric-label">Content This Week</div><div class="metric-val" style="color:var(--c3)">3</div><div class="metric-sub">posts published</div><div class="metric-bar"><div class="metric-bar-fill" style="width:43%;background:var(--c3)"></div></div></div>
+          <div class="metric-card"><div class="metric-label">Channel Modules</div><div class="metric-val" style="color:var(--c3)">4/10</div><div class="metric-sub">sections complete</div><div class="metric-bar"><div class="metric-bar-fill" style="width:40%;background:var(--c3)"></div></div></div>
+        </div>
+        <div class="pulse-card">
+          <div class="pulse-head"><div class="pulse-title">✦ Activate Pillar Insights</div><button class="btn btn-g btn-sm" onclick="generatePillarInsight('Activate')">Refresh</button></div>
+          <div id="db-activate-insight" class="pulse-items">
+            <div class="pulse-item warn"><div class="pulse-dot"></div>Posting 3x this week is a good start — aim for 4x next week to build the algorithm habit.</div>
+            <div class="pulse-item act"><div class="pulse-dot"></div>Your Email module is untouched. A 3-email welcome sequence is the single highest-ROI content task right now.</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="db-convert" style="display:none">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:18px">
+          <div style="width:10px;height:10px;border-radius:3px;background:var(--c4)"></div>
+          <div class="pg-title" style="margin-bottom:0;font-size:18px">Convert Pillar Dashboard</div>
+        </div>
+        <div class="pillar-dash-grid">
+          <div class="pd-card">
+            <div class="pd-label">Funnel Stage Completion</div>
+            <div class="pd-items">
+              <div class="pd-row"><div class="pd-check">◐</div><div class="pd-name">Offer Suite Mapped</div><div class="pd-status st-prog">In Progress</div></div>
+              <div class="pd-row"><div class="pd-check">○</div><div class="pd-name">Lead Magnet Built</div><div class="pd-status st-todo">Not Started</div></div>
+              <div class="pd-row"><div class="pd-check">○</div><div class="pd-name">Lead Capture Live</div><div class="pd-status st-todo">Not Started</div></div>
+              <div class="pd-row"><div class="pd-check">○</div><div class="pd-name">Welcome Sequence</div><div class="pd-status st-todo">Not Started</div></div>
+              <div class="pd-row"><div class="pd-check">○</div><div class="pd-name">Sales Page</div><div class="pd-status st-todo">Not Started</div></div>
+              <div class="pd-row"><div class="pd-check">○</div><div class="pd-name">Booking System</div><div class="pd-status st-todo">Not Started</div></div>
+            </div>
+          </div>
+          <div class="pd-card">
+            <div class="pd-label">Conversion Readiness</div>
+            <div style="font-family:'Playfair Display',serif;font-size:32px;font-weight:400;margin-bottom:4px;color:var(--c4)">20</div>
+            <div style="font-size:12px;color:var(--t2);margin-bottom:10px">Funnel completion score</div>
+            <div class="metric-bar"><div class="metric-bar-fill" style="width:20%;background:var(--c4)"></div></div>
+            <div style="font-size:12px;color:var(--t2);margin-top:8px">Offer suite in progress · No active funnel yet · Booking system not connected</div>
+          </div>
+        </div>
+        <div class="pulse-card">
+          <div class="pulse-head"><div class="pulse-title">✦ Convert Pillar Insights</div><button class="btn btn-g btn-sm" onclick="generatePillarInsight('Convert')">Refresh</button></div>
+          <div id="db-convert-insight" class="pulse-items">
+            <div class="pulse-item warn"><div class="pulse-dot"></div>You have no active path from follower to client. This is your biggest revenue gap right now.</div>
+            <div class="pulse-item act"><div class="pulse-dot"></div>Start with the offer suite — define entry, core, and premium before building any funnel assets.</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="db-automate" style="display:none">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:18px">
+          <div style="width:10px;height:10px;border-radius:3px;background:var(--c5)"></div>
+          <div class="pg-title" style="margin-bottom:0;font-size:18px">Automate Pillar Dashboard</div>
+        </div>
+        <div class="metric-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="metric-card"><div class="metric-label">Automations Active</div><div class="metric-val" style="color:var(--c5)">0</div><div class="metric-sub">of 8 recommended</div><div class="metric-bar"><div class="metric-bar-fill" style="width:0%;background:var(--c5)"></div></div></div>
+          <div class="metric-card"><div class="metric-label">Est. Hours/Week Saved</div><div class="metric-val" style="color:var(--c5)">0h</div><div class="metric-sub">potential: ~6h/week</div><div class="metric-bar"><div class="metric-bar-fill" style="width:0%;background:var(--c5)"></div></div></div>
+          <div class="metric-card"><div class="metric-label">Pain Points Identified</div><div class="metric-val" style="color:var(--c5)" id="db-pain-count">0</div><div class="metric-sub">selected in diagnostic</div><div class="metric-bar"><div class="metric-bar-fill" id="db-pain-bar" style="width:0%;background:var(--c5)"></div></div></div>
+        </div>
+        <div class="pulse-card">
+          <div class="pulse-head"><div class="pulse-title">✦ Automate Pillar Insights</div><button class="btn btn-g btn-sm" onclick="generatePillarInsight('Automate')">Refresh</button></div>
+          <div id="db-automate-insight" class="pulse-items">
+            <div class="pulse-item act"><div class="pulse-dot"></div>Start the Automate diagnostic — select your pain points and get your personalized automation plan.</div>
+            <div class="pulse-item act"><div class="pulse-dot"></div>Even 2 automations (lead follow-up + invoice sending) could save 3+ hours per week immediately.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUDIT -->
+    <div class="view" id="view-audit">
+      <div class="pg-title" id="audit-title">Brand Health Audit</div>
+      <div class="pg-sub" id="audit-sub">Scored across 8 dimensions of brand strength.</div>
+      <div class="ag" id="audit-grid"></div>
+      <div class="card">
+        <div class="ch"><div class="ct">✦ Recommendations</div><div class="ai-badge" id="audit-rec-badge">Based on your audit</div></div>
+        <div id="audit-recs" style="display:flex;flex-direction:column;gap:7px"></div>
+      </div>
+    </div>
+
+    <!-- ASSET VAULT -->
+    <div class="view" id="view-res">
+      <div class="pg-title">Asset Vault</div>
+      <div class="pg-sub">Everything produced in your Brand OS, plus curated resources.</div>
+      <div class="res-tabs"><button class="rtab active" id="rtab-vault" onclick="resTab('vault')">My Assets</button><button class="rtab" id="rtab-lib" onclick="resTab('lib')">Curated Library</button></div>
+      <div id="r-vault">
+        <div class="vault-grid">
+          <div class="vi"><div class="vi-icon">🎨</div><div class="vi-t">Brand Guidelines</div><div class="vi-m">PDF · Brand Pillar</div><div class="vi-acts"><button class="btn btn-g btn-sm">Open</button><button class="btn btn-g btn-sm">Download</button></div></div>
+          <div class="vi"><div class="vi-icon">📸</div><div class="vi-t">Logo Suite</div><div class="vi-m">ZIP · 12 files</div><div class="vi-acts"><button class="btn btn-g btn-sm">Open</button><button class="btn btn-g btn-sm">Download</button></div></div>
+          <div class="vi"><div class="vi-icon">✍️</div><div class="vi-t">Brand Story Draft</div><div class="vi-m">Generated · Brand</div><div class="vi-acts"><button class="btn btn-g btn-sm">Open</button><button class="btn btn-g btn-sm">Edit</button></div></div>
+          <div class="vi"><div class="vi-icon">📋</div><div class="vi-t">Messaging Playbook</div><div class="vi-m">In progress · Messaging</div><div class="vi-acts"><button class="btn btn-g btn-sm">Open</button><button class="btn btn-g btn-sm">Edit</button></div></div>
+          <div class="vi"><div class="vi-icon">🔁</div><div class="vi-t">Content Framework</div><div class="vi-m">Audience + Format + Cadence</div><div class="vi-acts"><button class="btn btn-p btn-sm" onclick="nav('studio');studioNav('strategy')">Open →</button></div></div>
+          <div class="vi"><div class="vi-icon">🔗</div><div class="vi-t">Sales Page Copy</div><div class="vi-m">Not started</div><div class="vi-acts"><button class="btn btn-p btn-sm" onclick="openPillar(4)">Start →</button></div></div>
+        </div>
+      </div>
+      <div id="r-lib" style="display:none">
+        <div class="lib-list">
+          <div class="li"><div class="li-icon">🎥</div><div><div class="li-t">Brand Strategy Masterclass</div><div class="li-d">Core framework walkthrough — start here</div></div><div class="li-tag"><span class="tag ts">Strategy</span></div></div>
+          <div class="li"><div class="li-icon">📖</div><div><div class="li-t">Canva Brand Kit Setup Guide</div><div class="li-d">Step-by-step visual identity setup</div></div><div class="li-tag"><span class="tag tb">Brand</span></div></div>
+          <div class="li"><div class="li-icon">🔧</div><div><div class="li-t">Flodesk Email Templates</div><div class="li-d">Welcome sequence and newsletter starters</div></div><div class="li-tag"><span class="tag tc">Content</span></div></div>
+          <div class="li"><div class="li-icon">⚡</div><div><div class="li-t">Zapier Automation Starter Kit</div><div class="li-d">10 automations every founder should have</div></div><div class="li-tag"><span class="tag tt">Automate</span></div></div>
+          <div class="li"><div class="li-icon">💡</div><div><div class="li-t">Offer Suite Framework</div><div class="li-d">Entry → Core → Premium ladder guide</div></div><div class="li-tag"><span class="tag ts">Strategy</span></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// CLIENT CONFIG
+// This object is the single source of truth for this client.
+// In production: populated from your database on page load.
+// In the prototype: paste in the osConfig from the intake form.
+// ══════════════════════════════════════════════════════════
+const CLIENT_CONFIG = {
+  clientName: 'Cabri Caldwell',
+  clientFirstName: 'Cabri',
+  clientEmail: '',
+  industry: 'Home Services · Organizing & Moving',
+  primaryGoal: 'Build a coordinated five-brand portfolio with clear positioning across each entity',
+  brands: [
+    { key:'mto',      name:'Minimize then Organize', industry:'Professional Organizing', stage:'Brand pitch approved' },
+    { key:'remove',   name:'Remove LBK',             industry:'Moving Crate Rental · Lubbock, TX', stage:'Brand in progress' },
+    { key:'ironclad', name:'Ironclad',               industry:'Service Brand',          stage:'Foundation pending' },
+    { key:'onm',      name:'Organizer Near Me',      industry:'Directory / Marketplace', stage:'Foundation pending' },
+    { key:'studio',   name:'Pro Organizer Studio',   industry:'Creative / Design',       stage:'Foundation pending' },
+  ],
+  selectedChannels: ['instagram','email'],
+  preSelectedPains: [],
+  openAnswer: 'Build out brand identity documentation for all 5 entities — voice, values, visuals, and ideal client profile.',
+  approvedAt: '',
+  audienceData: {},
+  narrativeData: {},
+};
+
+// ══════════════════════════════════════════════════════════
+// BRAND CONTENT — pulled from Cabri's Notion portal (Brand Foundation → Visual Identity → Brand World)
+// Single source of truth for what each brand "knows about itself" inside this OS.
+// ══════════════════════════════════════════════════════════
+const BRAND_CONTENT = {
+  mto: {
+    essence: 'Your home should work for your life — not the other way around.',
+    positioning: 'The edit-first organizer. Where other organizers arrive with systems, MTO arrives with perspective.',
+    mission: 'Minimize chaos through systems — so every home works for the people who live in it.',
+    audiencePrimary: 'Busy homeowners who\'ve tried to organize but feel like they\'re always behind. They want peace — not a Pinterest board. They need someone to help them make decisions, not just move things around.',
+    audienceSecondary: 'People in life transitions — new homes, growing families, downsizing — who need a fresh system, not just rearranged clutter.',
+    values: [
+      'Edit before organize — Less is the strategy. Organization is just the execution.',
+      'Systems, not stuff — A home that maintains itself, not one that looks good for a week.',
+      'Warm authority — Expert in the room, but never clinical or cold.',
+      'Clarity over complexity — Simple solutions that actually stick.',
+      'Results-first — The work is physical, but the outcome is emotional.',
+    ],
+    differentiation: [
+      'Only team-based organizing operation in the Lubbock market',
+      'Minimize-first methodology vs. traditional organize-in-place approach',
+      'Strategic partner positioning — not a cleaning service or product vendor',
+      'Designed, intentional brand identity vs. commodity service providers',
+    ],
+    personality: 'Direct, warm, slightly witty — never precious, never preachy, never clinical.',
+    voiceIs: ['Direct','Warm','Slightly witty'],
+    voiceIsNot: ['Precious about minimalism as a lifestyle','Clinical or cold','A storage product company','A cleaning service'],
+    palette: [
+      {role:'Signal red',   hex:'#D43F2E', note:'Action, editing, the "cut" moment'},
+      {role:'Warm cream',   hex:'#F1E8D8', note:'Calm, clarity, the "after" state'},
+      {role:'Dusty rose',   hex:'#D9A8A0', note:'Warmth, approachability, community'},
+      {role:'Muted blue',   hex:'#8AA3B5', note:'Trust, breathing room'},
+    ],
+    logoNote: 'Handwritten script "m" mark — disarming, personal, like a note left by a friend. Paired with clean serif and monospace type.',
+    services: [
+      {name:'Single Zone',  scope:'One room, one system',                for:'Entry point, first-time clients'},
+      {name:'Partial Home', scope:'Key spaces, one or two visits',       for:'Targeted transformation'},
+      {name:'Full Home',    scope:'Every room, full team, full timeline',for:'Complete whole-home edit'},
+    ],
+    tagline: 'Minimize chaos through systems.',
+    hero: 'Life can be messy — but it doesn\'t have to stay that way.',
+    cta: 'You\'re only a few edits away from a home that works for you, not against you.',
+    notThis: 'Not a minimalism lifestyle brand. Not a cleaning service. Not a storage product company. The physical work is the delivery mechanism — the product is clarity, peace, and a home that maintains itself.',
+    world: {
+      feeling: 'To be defined with Cabri.',
+      lifestyle: 'To be defined with Cabri.',
+      content: 'Before/after transformations, organization tips, home-tour style content, creator-style room-by-room videos. YouTube long-form: room guides, minimalism lifestyle, client transformation stories.',
+      references: 'To be added (Monday brand review).',
+    },
+    notionUrl: 'https://www.notion.so/343dc7fe3d0a81dd8ffac539be38e369',
+    health: 62,
+    pillars: { brand: 80, messaging: 70, activate: 25, convert: 40, automate: 0 },
+    audit: [
+      { label:'Visual Identity',    score:65, note:'Color system and "m" mark defined. Logo files and templates pending designer handoff.' },
+      { label:'Brand Voice',        score:80, note:'"Direct, warm, slightly witty" — well articulated with what-it-is-not boundaries.' },
+      { label:'Market Positioning', score:88, note:'"The edit-first organizer" — strongest positioning in the portfolio. Genuine differentiation.' },
+      { label:'Messaging Clarity',  score:78, note:'Tagline, hero, and CTA all defined. Ready to push into homepage and ad copy.' },
+      { label:'Content Presence',   score:30, note:'Content strategy in progress. No published cadence yet.' },
+      { label:'Conversion System',  score:35, note:'Service tiers defined (Single Zone / Partial / Full). Booking flow not wired.' },
+      { label:'Offer Clarity',      score:82, note:'Three named services with clear scope and ideal client per tier.' },
+      { label:'Digital Presence',   score:40, note:'Brand assets ready. Site and social system not yet built around new identity.' },
+    ],
+    recommendations: [
+      { tag:'Top priority', body:'Push the homepage and Honeybook intake into the new positioning + tagline. The strategic work is done — execution is the gap.' },
+      { tag:'Quick win',    body:'Write 5 ad creatives using the "edit before organize" thesis. The brand has a real point of view — use it.' },
+      { tag:'This month',   body:'Set the team-based organizing differentiator as the lead message across every surface.' },
+    ],
+  },
+  remove: {
+    essence: 'Moving without the cardboard.',
+    positioning: 'The only moving solution in Lubbock that removes the hassle of boxes entirely — we deliver, you move, we pick up.',
+    mission: 'To be defined with Cabri.',
+    audiencePrimary: 'College students & tech movers, 18–26, Lubbock TX. End-of-semester move-outs, first apartments, frequent movers. Pain: cardboard is a pain to find, tape, haul, and dispose of.',
+    audienceSecondary: 'General LBK movers, 27–45. Home moves, remodels, temporary storage. Pain: moving is expensive and stressful.',
+    audienceTertiary: 'Seniors.',
+    values: ['Simplicity','Sustainability','Reliability  (to be finalized with Cabri)'],
+    differentiation: [
+      'Only rental crate service in Lubbock County',
+      'Free delivery + pickup included',
+      'Starts at $20 — more affordable than buying boxes',
+      'Eco-friendly / reusable',
+      'Storage options available',
+    ],
+    personality: 'Friendly and practical, with a bold edge (to be finalized).',
+    palette: [
+      {role:'Primary', hex:'#D43F2E', note:'Red — pulled from logo'},
+    ],
+    logoNote: 'Red logo on white background. Alternate versions (dark BG, stacked vs. horizontal) TBD.',
+    photography: 'Crates in use — packing, stacking, loading, delivery, pickup. Feeling: easy, clean, satisfying. Environments: apartments, student housing, front doors, moving trucks. Bright natural light. Real people mid-move — not posed.',
+    tagline: 'Moving made simple.',
+    hero: 'Skip the cardboard. We deliver the crates, you move, we pick them up.',
+    cta: 'Reserve your crates →',
+    world: {
+      feeling: 'Relieved — like someone just took something off their plate. Smart — like they found a better way that most people don\'t know about yet.',
+      lifestyle: 'In motion — literally and figuratively. Starting new chapters. Value convenience. Environmentally aware. Share their life on social.',
+      content: 'Short-form video of satisfying before/after moves. Creator-style real and relatable — "here\'s how I moved my whole apartment for $40." YouTube: move-out guides, packing tips, Lubbock living, "things I wish I knew." Customer-filmed UGC.',
+      references: 'To be added with Cabri.',
+    },
+    notionUrl: 'https://www.notion.so/343dc7fe3d0a81b1960eec400beed404',
+    health: 54,
+    pillars: { brand: 60, messaging: 55, activate: 45, convert: 50, automate: 0 },
+    audit: [
+      { label:'Visual Identity',    score:55, note:'Red logo established. Full palette, typography, and ad templates still TBD.' },
+      { label:'Brand Voice',        score:50, note:'Personality direction sketched (friendly + practical). Needs finalizing with Cabri.' },
+      { label:'Market Positioning', score:75, note:'"Skip the cardboard" is a real wedge — only crate rental in Lubbock County.' },
+      { label:'Messaging Clarity',  score:50, note:'Differentiators are sharp ($20 start, free pickup, eco). Tagline and hero need a second pass.' },
+      { label:'Content Presence',   score:35, note:'Pre-shoot direction defined. Content shoots and creator pipeline not yet running.' },
+      { label:'Conversion System',  score:45, note:'Booqable booking exists. Pricing calculator live. Homepage CTA flow needs work.' },
+      { label:'Offer Clarity',      score:70, note:'Pricing and storage add-ons are clear. Bundling for student moves is an open opportunity.' },
+      { label:'Digital Presence',   score:55, note:'Site live, paid Meta campaigns in motion. SEO and local search underbuilt.' },
+    ],
+    recommendations: [
+      { tag:'Top priority', body:'Finalize the brand foundation — values, personality, and brand feeling — before the next content shoot.' },
+      { tag:'Quick win',    body:'Add a hero CTA on the homepage that names the $20 entry price. The price IS the marketing.' },
+      { tag:'This month',   body:'Build the UGC pipeline: customers filming their delivery and tagging Remove LBK is your best content channel.' },
+    ],
+  },
+  ironclad: {
+    essence: 'TBD — foundation pending with Cabri.',
+    positioning: 'To be defined.',
+    mission: 'To be defined.',
+    audiencePrimary: 'To be defined.',
+    audienceSecondary: 'To be defined.',
+    values: ['To be defined (3–5 core values with Cabri)'],
+    differentiation: ['To be defined'],
+    personality: 'To be defined.',
+    palette: [],
+    logoNote: 'Logo status TBD.',
+    world: {
+      feeling: 'To be defined with Cabri.',
+      lifestyle: 'To be defined.',
+      content: 'Behind-the-scenes craft/process content, before/after transformations, creator-style educational videos.',
+      references: 'To be added.',
+    },
+    notionUrl: 'https://www.notion.so/343dc7fe3d0a812489eac5171ef901e9',
+    health: 22,
+    pillars: { brand: 15, messaging: 15, activate: 30, convert: 30, automate: 0 },
+    audit: [
+      { label:'Visual Identity',    score:20, note:'Logo and visual system pending.' },
+      { label:'Brand Voice',        score:15, note:'Personality not yet defined with Cabri.' },
+      { label:'Market Positioning', score:20, note:'Service scope unclear — needs a category and customer thesis.' },
+      { label:'Messaging Clarity',  score:15, note:'Mission, positioning, and audience all marked TBD in Notion.' },
+      { label:'Content Presence',   score:25, note:'Behind-the-scenes craft content is the natural angle once foundation is set.' },
+      { label:'Conversion System',  score:30, note:'Activate and Convert layers in progress. Foundation needs to catch up.' },
+      { label:'Offer Clarity',      score:25, note:'Service definition pending.' },
+      { label:'Digital Presence',   score:30, note:'Some content shoots in motion. No coherent site/social system yet.' },
+    ],
+    recommendations: [
+      { tag:'Top priority', body:'Define Ironclad\'s mission, audience, and competitive differentiation. Everything downstream is stalled until this is set.' },
+      { tag:'Quick win',    body:'Block 90 minutes with Cabri to answer the 6 Brand Foundation questions in Notion.' },
+      { tag:'This month',   body:'Run a brand pitch session — same format as the MTO branding review that landed.' },
+    ],
+  },
+  onm: {
+    essence: 'TBD — directory / marketplace foundation pending.',
+    positioning: 'To be defined.',
+    mission: 'To be defined.',
+    audiencePrimary: 'To be defined.',
+    audienceSecondary: 'To be defined.',
+    values: ['To be defined'],
+    differentiation: ['To be defined'],
+    personality: 'To be defined.',
+    palette: [],
+    logoNote: 'Logo status TBD.',
+    world: {
+      feeling: 'To be defined.',
+      lifestyle: 'To be defined.',
+      content: 'Likely organizer discovery, local service spotlights, before/after spaces.',
+      references: 'To be added with Cabri.',
+    },
+    notionUrl: 'https://www.notion.so/343dc7fe3d0a81fcb3b3f283d7891b6e',
+    health: 16,
+    pillars: { brand: 10, messaging: 10, activate: 5, convert: 10, automate: 0 },
+    audit: [
+      { label:'Visual Identity',    score:15, note:'No logo, palette, or type system defined.' },
+      { label:'Brand Voice',        score:10, note:'Personality and voice TBD.' },
+      { label:'Market Positioning', score:15, note:'Directory / marketplace model needs strategic shape before brand work begins.' },
+      { label:'Messaging Clarity',  score:10, note:'All foundation fields marked TBD.' },
+      { label:'Content Presence',   score:15, note:'Likely angle: organizer discovery, local spotlights, before/after.' },
+      { label:'Conversion System',  score:20, note:'Marketplace mechanics not yet scoped — directory listing flow needs design.' },
+      { label:'Offer Clarity',      score:20, note:'What the brand actually sells (lead gen? referrals? subscription?) is unresolved.' },
+      { label:'Digital Presence',   score:25, note:'No site or social presence yet.' },
+    ],
+    recommendations: [
+      { tag:'Top priority', body:'Decide the business model first — directory, marketplace, or lead-gen. Brand can\'t precede the model here.' },
+      { tag:'Quick win',    body:'Reserve the .com and core handles before any of the strategy work begins.' },
+      { tag:'This month',   body:'Run a positioning session with Cabri to lock the category and the customer.' },
+    ],
+  },
+  studio: {
+    essence: 'TBD — Studio O foundation pending.',
+    positioning: 'To be defined.',
+    mission: 'To be defined.',
+    audiencePrimary: 'To be defined.',
+    audienceSecondary: 'To be defined.',
+    values: ['To be defined'],
+    differentiation: ['To be defined'],
+    personality: 'To be defined.',
+    palette: [],
+    logoNote: 'Logo status TBD.',
+    world: {
+      feeling: 'To be defined.',
+      lifestyle: 'To be defined.',
+      content: 'Tone TBD. Content pillars TBD.',
+      references: 'To be added.',
+    },
+    notionUrl: 'https://www.notion.so/343dc7fe3d0a813fb022d27b65b3b414',
+    health: 20,
+    pillars: { brand: 15, messaging: 15, activate: 10, convert: 10, automate: 0 },
+    audit: [
+      { label:'Visual Identity',    score:20, note:'Logo and visual system pending.' },
+      { label:'Brand Voice',        score:15, note:'Voice and tone TBD.' },
+      { label:'Market Positioning', score:20, note:'Creative/design positioning needs a sharper category and target.' },
+      { label:'Messaging Clarity',  score:15, note:'All foundation fields marked TBD.' },
+      { label:'Content Presence',   score:20, note:'Channel concept (YouTube long-form) sketched. First video concept TBD.' },
+      { label:'Conversion System',  score:20, note:'Service model and offer ladder undefined.' },
+      { label:'Offer Clarity',      score:25, note:'"Pro Organizer Studio" reads as creative/design — needs scope and price points.' },
+      { label:'Digital Presence',   score:25, note:'No live presence yet.' },
+    ],
+    recommendations: [
+      { tag:'Top priority', body:'Lock the studio model — agency, course, content brand, or product? The label doesn\'t commit yet.' },
+      { tag:'Quick win',    body:'Pick 3 aspirational references and use them as a brief for the brand pitch.' },
+      { tag:'This month',   body:'Define the first YouTube video concept — it forces all the foundation questions to get answered.' },
+    ],
+  },
+};
+
+// Currently-active brand index (mirrors brand-switcher selection)
+let currentBrandIndex = 0;
+function getCurrentBrand(){
+  const b = CLIENT_CONFIG.brands[currentBrandIndex] || CLIENT_CONFIG.brands[0];
+  return { brand: b, content: BRAND_CONTENT[b?.key] || {} };
+}
+
+// ── LOAD FROM INTAKE (call this after injecting intake data) ──
+function loadClientConfig(config) {
+  if (!config) return;
+  Object.assign(CLIENT_CONFIG, config);
+  initOS();
+}
+
+// ── INITIALIZE OS FROM CONFIG ──
+function initOS() {
+  const c = CLIENT_CONFIG;
+
+  // 1. Personalize greeting
+  const greetEl = document.getElementById('dash-greeting');
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  if (greetEl) greetEl.textContent = `${greeting}, ${c.clientFirstName || 'there'}.`;
+
+  // 2. Start rotating time-aware subheading
+  initRotatingSubheading();
+
+  // 3. Build brand switcher from config brands
+  if (c.brands && c.brands.length > 0) {
+    renderBrandSwitcher();
+  }
+
+  // 4. Pre-select channels in Messaging state
+  if (c.selectedChannels && c.selectedChannels.length > 0) {
+    selectedChannels = c.selectedChannels.map(ch => ch.toLowerCase());
+  }
+
+  // 5. Pre-seed Automate pain points
+  if (c.preSelectedPains && c.preSelectedPains.length > 0) {
+    c.preSelectedPains.forEach(pain => {
+      selectedPains.add(pain);
+    });
+  }
+
+  // 6. Update AI system context with client info
+  dynamicCtx = buildClientContext();
+
+  // 7. Update sidebar client badge
+  const nameEl = document.getElementById('client-name-badge');
+  const typeEl = document.getElementById('client-type-badge');
+  if (nameEl) nameEl.textContent = c.clientName || 'New Client';
+  if (typeEl) typeEl.textContent = c.industry || c.brands?.[0]?.industry || 'Founder';
+
+  // 8. Apply the currently-active brand to dashboard surfaces
+  if (typeof applyCurrentBrand === 'function') applyCurrentBrand();
+}
+
+function buildClientContext() {
+  const c = CLIENT_CONFIG;
+  let ctx = '';
+  if (c.clientName) ctx += `Client name: ${c.clientName}. `;
+  if (c.industry) ctx += `Industry: ${c.industry}. `;
+  if (c.primaryGoal) ctx += `Primary goal: ${c.primaryGoal}. `;
+  if (c.brands?.length) ctx += `Brands: ${c.brands.map(b => b.name).filter(Boolean).join(', ')}. `;
+  if (c.selectedChannels?.length) ctx += `Active channels: ${c.selectedChannels.join(', ')}. `;
+  if (c.openAnswer) ctx += `In their own words: "${c.openAnswer}". `;
+  if (c.preSelectedPains?.length) ctx += `Pain points: ${c.preSelectedPains.slice(0,4).join(', ')}. `;
+  return ctx;
+}
+
+function renderBrandSwitcher() {
+  const c = CLIENT_CONFIG;
+  const container = document.getElementById('brand-switcher-items');
+  if (!container) return;
+  const colors = ['#C87B5A','#6BBD7A','#7B8EC8','#9B7BC8','#4AADA8'];
+  container.innerHTML = c.brands.map((b, i) => {
+    const initials = b.name ? b.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() : '??';
+    const isCurrent = i === currentBrandIndex;
+    return `<div class="brand-item ${isCurrent?'current':''}" onclick="switchBrand(${i})">
+      <div class="brand-avatar" style="background:${colors[i%colors.length]}">${initials}</div>
+      <div class="brand-info">
+        <div class="brand-name">${b.name || 'Unnamed Brand'}</div>
+        <div class="brand-score">${b.stage || 'New'} · ${b.industry || ''}</div>
+      </div>
+    </div>`;
+  }).join('') + `<div class="brand-add" onclick="addBrand()">+ Add Brand</div>`;
+}
+
+// ── DATA ──
+const PILLARS = {
+  1:{title:'Brand',sub:'Build the foundation of who you are.',color:'var(--c1)',label:'Pillar 01 · Brand',
+    sections:[
+      {id:'core-beliefs',icon:'💡',title:'Core Beliefs',desc:'The values and convictions that anchor every brand decision.',status:'done',
+        key:'Core beliefs are the non-negotiables of your brand — what you stand for before you stand for anything else. They become your filter for decisions, partnerships, and content.',
+        fields:[
+          {t:'text',l:'What do you believe about your industry that most people get wrong?',h:'Be honest — this is your point of view.',p:'e.g. Most organizers focus on systems. I believe it starts with mindset.'},
+          {t:'opts',l:'Which values show up in your work every day?',o:['Excellence','Integrity','Simplicity','Empowerment','Authenticity','Beauty','Education','Community','Freedom','Growth']},
+          {t:'long',l:'What is the transformation you believe every client deserves?',p:'Describe the before and after in your own words...'},
+        ],chips:['What are my core beliefs based on my answers?','How do I use my beliefs in my marketing?','Write a belief statement for my brand']},
+      {id:'visual-identity',icon:'🎨',title:'Visual Identity',desc:'Your color palette, typography, logo, and imagery direction.',status:'done',
+        key:'Visual identity is the non-verbal language of your brand. Done right, someone should recognize your brand before they read a single word.',
+        fields:[
+          {t:'text',l:'Describe your brand aesthetic in 3 adjectives',p:'e.g. Editorial, warm, elevated'},
+          {t:'opts',l:'Which best describes your visual direction?',o:['Dark & moody','Light & airy','Bold & graphic','Warm & earthy','Clean & minimal','Rich & luxurious']},
+          {t:'text',l:'Who or what are your visual references?',h:'Brands, designers, accounts — anything that captures the feeling.',p:'e.g. The Row, Kinfolk magazine, Studio McGee'},
+          {t:'long',l:'Describe the feeling someone should have when they see your brand',p:'Not what it looks like — what it feels like...'},
+        ],chips:['Does my visual direction match my audience?','How do I stay consistent across platforms?','What imagery should I avoid?']},
+      {id:'brand-story',icon:'📖',title:'Brand Story',desc:'The narrative that connects your origin to your client\'s transformation.',status:'progress',
+        key:'Your brand story is not your resume — it\'s the bridge between where you came from and why your client should trust you with where they\'re going.',
+        fields:[
+          {t:'long',l:'What moment or experience led you to this work?',p:'The turning point — personal or professional...'},
+          {t:'long',l:'What did you know then that you wish someone had told you?',p:'This often becomes the core of your brand promise...'},
+          {t:'text',l:'Complete this sentence: "I do what I do because..."',p:'Your answer in plain language...'},
+        ],chips:['Write my brand story from my answers','Make my story feel more personal','How long should my brand story be?']},
+      {id:'brand-guidelines',icon:'📐',title:'Brand Guidelines',desc:'A single reference document your entire brand runs from.',status:'todo',
+        key:'Brand guidelines are not a design exercise — they\'re an operational tool. They protect your brand from inconsistency and make every future decision faster.',
+        fields:[
+          {t:'opts',l:'What do you currently have documented?',o:['Logo files','Color hex codes','Typography choices','Voice guidelines','Photography style','Nothing yet']},
+          {t:'long',l:'What does your brand never do? (voice, visual, messaging)',p:'The dos and don\'ts that define your boundaries...'},
+        ],chips:['What should go in my brand guidelines?','Generate a brand voice section','Help me write my dos and don\'ts']},
+    ]},
+  2:{title:'Messaging',sub:'Define how you speak — voice, narrative, and positioning.',color:'var(--c2)',label:'Pillar 02 · Messaging',
+    sections:[
+      {id:'audience',icon:'🎯',title:'Audience',desc:'Get specific about who you\'re talking to and what they actually need.',status:'done',
+        key:'The more specific your audience, the more magnetic your message. "Everyone" is not an audience — it\'s a way of saying nothing to no one.',
+        fields:[
+          {t:'text',l:'Give your ideal client a name',h:'Make them real — this is your north star for all messaging.',p:'e.g. Sarah'},
+          {t:'long',l:'Describe their daily life and their biggest frustration',p:'Be specific — what keeps them up at night?'},
+          {t:'long',l:'What have they already tried that hasn\'t worked?',p:'Understanding failed solutions makes your offer more compelling...'},
+          {t:'text',l:'What is the single outcome they want most?',p:'One sentence — the desired state they\'re paying for'},
+        ],chips:['Write a client avatar summary','How do I speak directly to this person?','What content would resonate with my ideal client?']},
+      {id:'narrative',icon:'💬',title:'Narrative',desc:'Your brand voice, core message, and the story you tell consistently.',status:'progress',
+        key:'Narrative is the throughline of everything you say. It\'s the consistent story your brand tells about who you help, how, and why it matters.',
+        fields:[
+          {t:'text',l:'Write your value proposition in one sentence',h:'What you do + who it\'s for + the specific outcome.',p:'e.g. I help luxury homeowners transform chaos into calm through editorial organizing.'},
+          {t:'opts',l:'How would you describe your brand voice?',o:['Direct & confident','Warm & encouraging','Elevated & editorial','Conversational & real','Educational & expert','Minimal & refined']},
+          {t:'long',l:'Write 3 sentences you\'d never say as your brand',p:'This defines your voice as much as what you do say...'},
+        ],chips:['Write my elevator pitch','Does my voice match my audience?','Generate 5 headline options for my homepage']},
+      {id:'channels',icon:'📡',title:'Channels',desc:'Where you show up — and which channels drive results for your audience.',status:'progress',
+        key:'Being everywhere is a strategy for burning out. Pick 2 channels where your ideal client already spends time and commit fully before adding more.',
+        fields:[
+          {t:'opts',l:'Select your primary channels (up to 3 — unlocks your Activate modules)',o:['Instagram','TikTok','Email','LinkedIn','Pinterest','Podcast','YouTube','Facebook']},
+          {t:'opts',l:'Where is your audience most active?',o:['Instagram','TikTok','Email','LinkedIn','Pinterest','Podcast','YouTube','Facebook']},
+          {t:'text',l:'How much time can you realistically give to content per week?',p:'e.g. 3–4 hours'},
+        ],chips:['Which channels make sense for my audience?','How do I choose between Instagram and TikTok?','What does a minimal but effective channel strategy look like?']},
+      {id:'keywords',icon:'🔑',title:'Keywords',desc:'The language your audience uses — adapted for each channel.',status:'todo',
+        key:'Keywords are the words your client uses to describe their own problem. Use their language, not yours, and you\'ll always be relevant.',
+        fields:[
+          {t:'long',l:'List 10 words or phrases your ideal client uses to describe their problem',h:'Think search terms, things they say out loud, how they describe their need.',p:'One per line...'},
+          {t:'long',l:'List the words that describe your solution in your client\'s words',p:'Not industry jargon — their actual language...'},
+          {t:'text',l:'What is the one phrase that should make someone think of you?',p:'Your ownable territory...'},
+        ],chips:['Generate SEO keywords for my niche','How do keywords change by channel?','Write Instagram caption hooks using my keywords']},
+    ]},
+  3:{title:'Activate',sub:'Show up on the right channels with the right content.',color:'var(--c3)',label:'Pillar 03 · Activate',sections:[]},
+  4:{title:'Convert',sub:'Turn attention into revenue.',color:'var(--c4)',label:'Pillar 04 · Convert',sections:[]},
+  5:{title:'Automate',sub:'Find the work that should be working for you.',color:'var(--c5)',label:'Pillar 05 · Automate',sections:[]},
+};
+
+const CHANNELS = {
+  instagram:{icon:'📸',name:'Instagram',rows:['Profile Optimization','Content Strategy','Reels Playbook','Story System','Hashtag Strategy'],active:true},
+  tiktok:{icon:'🎵',name:'TikTok',rows:['Profile Setup','Content Pillars','Hook Writing','Posting Cadence','Trend Integration'],active:false},
+  email:{icon:'✉️',name:'Email',rows:['List Building','Welcome Sequence','Newsletter System','Segmentation','Automation Flows'],active:true},
+  linkedin:{icon:'💼',name:'LinkedIn',rows:['Profile Optimization','Content Strategy','Connection Strategy','Thought Leadership','Lead Generation'],active:false},
+  pinterest:{icon:'📌',name:'Pinterest',rows:['Board Strategy','Pin Design','SEO & Keywords','Scheduling System','Traffic Conversion'],active:false},
+  podcast:{icon:'🎙️',name:'Podcast',rows:['Show Concept','Episode Format','Guest Strategy','Distribution','Repurposing System'],active:false},
+};
+
+const PAIN_POINTS = [
+  {id:'leads',label:'Following up with leads manually'},
+  {id:'onboard',label:'Client onboarding is time-consuming'},
+  {id:'invoices',label:'Creating and sending invoices'},
+  {id:'scheduling',label:'Back-and-forth scheduling'},
+  {id:'content',label:'Repurposing content across platforms'},
+  {id:'social',label:'Posting consistently to social media'},
+  {id:'email',label:'Writing and sending emails one by one'},
+  {id:'contracts',label:'Sending contracts and collecting signatures'},
+  {id:'reporting',label:'Pulling together reports or updates'},
+  {id:'reminders',label:'Sending reminders and follow-ups'},
+  {id:'intake',label:'Client intake and data collection'},
+  {id:'reviews',label:'Asking for reviews and testimonials'},
+];
+
+const CONVERT_BUILD = [
+  {title:'Map Your Offer Suite',desc:'Define your entry, core, and premium offers as a clear client journey ladder.',status:'now',checks:['Entry-level offer defined','Core offer defined','Premium offer defined']},
+  {title:'Build Your Lead Magnet',desc:'One high-value freebie that solves a small version of your client\'s big problem.',status:'soon',checks:['Topic chosen','Format decided','Landing page created']},
+  {title:'Set Up Lead Capture',desc:'An opt-in form connected to your email platform — one page, one offer, one action.',status:'soon',checks:['Form created','Connected to email platform','Thank-you page live']},
+  {title:'Write Your Welcome Sequence',desc:'3–5 emails that onboard new subscribers and prime them for your offer.',status:'soon',checks:['Email 1: Welcome written','Email 2: Value written','Email 3: Offer introduced']},
+  {title:'Build Your Sales Page',desc:'Problem → Solution → Outcome → Proof → CTA.',status:'soon',checks:['Headline written','Body copy drafted','CTA tested']},
+  {title:'Set Up Booking System',desc:'Discovery call → proposal → contract → invoice in one seamless flow.',status:'soon',checks:['Calendar link live','Proposal template ready','Contract + invoice connected']},
+];
+
+const CONVERT_AUDIT = [
+  {title:'Audit: Awareness to Interest',desc:'Are people finding you? Is your content moving them toward wanting to learn more?',status:'now',checks:['Traffic sources identified','Content driving clicks','Profile converting visitors to followers']},
+  {title:'Audit: Interest to Intent',desc:'Is your nurture content building enough trust to make someone want to buy?',status:'now',checks:['Email or follow-up system exists','Social proof visible','Value demonstrated before ask']},
+  {title:'Audit: Intent to Purchase',desc:'When someone is ready, is the path to yes frictionless?',status:'soon',checks:['Clear CTA on all touchpoints','Sales page or booking page exists','Response time under 24 hours']},
+  {title:'Audit: Purchase to Referral',desc:'Are clients so delighted they tell others?',status:'soon',checks:['Onboarding experience defined','Results documented','Referral ask in place']},
+];
+
+// ── SHARED STATE ──
+// This is the single source of truth for audience data.
+// Messaging → Audience writes here. Content Studio reads from here.
+const BRAND_STATE = {
+  audience: {
+    clientName: '',
+    dailyLife: '',
+    failedAttempts: '',
+    desiredOutcome: '',
+    completed: false,
+  },
+  narrative: {
+    valueProp: '',
+    voice: [],
+    neverSay: '',
+  },
+  channels: [],
+  keywords: '',
+  // Content Framework — saved per-brand via saveContentFramework()
+  // The Generate tab pulls audience + formats + cadence + goal into every prompt.
+  framework: {
+    formats: [],   // e.g. ['On camera / video', 'Storytelling']
+    cadence: [],   // e.g. ['3x / week']
+    goal:    [],   // e.g. ['Drive bookings']
+    savedAt: '',
+  },
+};
+
+// Per-brand framework store so switching brands swaps the saved framework in/out.
+const FRAMEWORKS_BY_BRAND = {};
+
+// ── STATE ──
+let curPillar = 1;
+let curSection = null;
+let curSectionPillar = 1;
+let selectedChannels = ['instagram','email'];
+let selectedPains = new Set();
+let busy = false;
+
+// ── NAVIGATION ──
+function nav(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  const nb=document.getElementById('ni-'+id);
+  if(nb) nb.classList.add('active');
+  const labels={dash:'Dashboard',audit:'Brand Audit',studio:'Content Studio',res:'Asset Vault','dash-brand':'Brand Dashboards'};
+  setCrumb(labels[id]||id);
+  // When opening Content Studio, always re-render the audience section
+  if(id==='studio') renderStudioAudience();
+}
+
+function setCrumb(txt){document.getElementById('crumb').innerHTML=`Brand OS › <b>${txt}</b>`;}
+
+function openPillar(n){
+  curPillar=n;
+  const d=PILLARS[n];
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-pillar').classList.add('active');
+  document.querySelectorAll('.ni').forEach(x=>x.classList.remove('active'));
+  document.getElementById('ni-p'+n).classList.add('active');
+  document.getElementById('pl-dot').style.background=d.color;
+  document.getElementById('pl-lbl').textContent=d.label;
+  document.getElementById('pl-title').textContent=d.title;
+  document.getElementById('pl-sub').textContent=d.sub;
+  document.getElementById('pl-sections').style.display='none';
+  document.getElementById('pl-activate').style.display='none';
+  document.getElementById('pl-convert').style.display='none';
+  document.getElementById('pl-automate').style.display='none';
+  setCrumb(d.title);
+  if(n===3){document.getElementById('pl-activate').style.display='block';renderChannels();}
+  else if(n===4){document.getElementById('pl-convert').style.display='block';}
+  else if(n===5){document.getElementById('pl-automate').style.display='block';renderPains();}
+  else{document.getElementById('pl-sections').style.display='block';renderSections(d.sections);}
+}
+
+function renderSections(secs){
+  const sl={done:'Complete',progress:'In Progress',todo:'Not Started'};
+  document.getElementById('pl-sections').innerHTML=`<div class="sec-list">${secs.map(s=>`<div class="sc" onclick="openSection(${curPillar},'${s.id}')"><div class="sc-icon">${s.icon}</div><div class="sc-t">${s.title}</div><div class="sc-d">${s.desc}</div><div class="sc-st"><div class="sdot ${s.status}"></div>${sl[s.status]||'Not Started'}</div></div>`).join('')}</div>`;
+}
+
+function renderChannels(){
+  document.getElementById('ch-grid').innerHTML=Object.entries(CHANNELS).map(([k,c])=>{
+    const on=selectedChannels.includes(k)||c.active;
+    return `<div class="ch-card ${on?'':'locked'}"><div class="ch-head"><div class="ch-icon">${c.icon}</div><div class="ch-name">${c.name}</div><span class="ch-tag ${on?'on':'off'}">${on?'Active':'Locked'}</span></div>${on?`<div class="ch-rows">${c.rows.map((r,i)=>`<div class="ch-row"><span>${r}</span><div class="sdot ${i<2?'done':i<3?'progress':'todo'}"></div></div>`).join('')}</div>`:'<div class="ch-locked">Select in Messaging → Channels to unlock</div>'}</div>`;
+  }).join('');
+}
+
+function renderPains(){
+  document.getElementById('pain-grid').innerHTML=PAIN_POINTS.map(p=>`<div class="pain-item" id="pi-${p.id}" onclick="togglePain('${p.id}')"><input type="checkbox" class="pain-cb" id="pcb-${p.id}"/><div class="pain-label">${p.label}</div></div>`).join('');
+  updatePainCount();
+}
+
+function togglePain(id){
+  const el=document.getElementById('pi-'+id);
+  const cb=document.getElementById('pcb-'+id);
+  if(selectedPains.has(id)){selectedPains.delete(id);el.classList.remove('sel');cb.checked=false;}
+  else{selectedPains.add(id);el.classList.add('sel');cb.checked=true;}
+  updatePainCount();
+}
+
+function updatePainCount(){document.getElementById('pain-count').textContent=`${selectedPains.size} pain point${selectedPains.size!==1?'s':''} selected`;}
+
+async function generateAutoSuggestions(){
+  if(busy||selectedPains.size===0){
+    if(selectedPains.size===0) alert('Please select at least one pain point first.');
+    return;
+  }
+  busy=true;
+  const results=document.getElementById('auto-results');
+  results.innerHTML='<div style="text-align:center;padding:20px;color:var(--t3);font-size:13px">'+dots()+' Analyzing your pain points and brand outputs...</div>';
+  const pains=Array.from(selectedPains).map(id=>PAIN_POINTS.find(p=>p.id===id)?.label).join(', ');
+  const prompt=`The user is a professional organizer repositioning to the luxury market. Their selected pain points are: ${pains}. Based on these pain points and their brand strategy (Brand → Messaging → Activate → Convert → Automate framework), generate 5 specific automation recommendations. For each, provide: title, the specific tool to use (Zapier, Flodesk, HoneyBook, Make, etc.), priority (high/medium/low), and a 2-sentence explanation of what it automates and how to set it up. Format as JSON array: [{title, tool, priority, explanation}]`;
+  const reply=await callClaude(prompt,'Return only valid JSON, no markdown.');
+  try{
+    const clean=reply.replace(/```json|```/g,'').trim();
+    const items=JSON.parse(clean);
+    results.innerHTML=items.map((item,i)=>`<div class="auto-card"><div class="auto-card-head" onclick="toggleAutoCard(${i})"><div class="auto-priority pri-${item.priority==='high'?'high':item.priority==='medium'?'mid':'low'}">${i+1}</div><div class="auto-card-title">${item.title}</div><div class="auto-card-tool">via ${item.tool}</div><div class="auto-card-chevron" id="acc-${i}">▼</div></div><div class="auto-card-body" id="acb-${i}"><div class="auto-body-content">${item.explanation}<br><br><button class="btn btn-g btn-sm" onclick="askAutoDeep('${item.title.replace(/'/g,"\\'")}','${item.tool}')">Get setup guide →</button></div></div></div>`).join('');
+    document.getElementById('auto-ai').style.display='block';
+  } catch(e){
+    results.innerHTML='<div style="padding:16px;font-size:13px;color:var(--t2)">'+reply+'</div>';
+    document.getElementById('auto-ai').style.display='block';
+  }
+  busy=false;
+}
+
+function toggleAutoCard(i){
+  const body=document.getElementById('acb-'+i);
+  const chev=document.getElementById('acc-'+i);
+  const open=body.classList.toggle('open');
+  chev.style.transform=open?'rotate(180deg)':'';
+}
+
+function askAutoDeep(title,tool){
+  document.getElementById('auto-ai-inp').value=`Give me a step-by-step setup guide for automating "${title}" using ${tool}`;
+  autoAISend();
+  document.getElementById('auto-ai').scrollIntoView({behavior:'smooth'});
+}
+
+function openSection(pillar,id){
+  curSectionPillar=pillar;
+  const sec=PILLARS[pillar].sections.find(s=>s.id===id);
+  if(!sec) return;
+  curSection=sec;
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-sec').classList.add('active');
+  document.getElementById('sec-back-lbl').textContent=PILLARS[pillar].title;
+  document.getElementById('sec-title').textContent=sec.title;
+  document.getElementById('sec-sub').textContent=sec.desc;
+  document.getElementById('lm-title').textContent=sec.title+' — Video Lesson';
+  document.getElementById('lk-text').textContent=sec.key;
+  document.getElementById('sec-chips').innerHTML=sec.chips.map(c=>`<button class="chip" onclick="secChip('${c.replace(/'/g,"\\'")}')">${c}</button>`).join('');
+  document.getElementById('sec-ai-resp').innerHTML='<span class="ai-italic">I know your framework and your answers. Ask anything or use a prompt above.</span>';
+  renderWS(sec.fields);
+  stTab('learn');
+  setCrumb(`${PILLARS[pillar].title} › ${sec.title}`);
+}
+
+function renderWS(fields){
+  document.getElementById('ws-fields').innerHTML=fields.map((f,i)=>{
+    if(f.t==='text') return `<div class="fg"><div class="fl">${f.l}</div>${f.h?`<div class="fh">${f.h}</div>`:''}<input class="field-input" placeholder="${f.p||''}" id="f${i}"/></div>`;
+    if(f.t==='long') return `<div class="fg"><div class="fl">${f.l}</div>${f.h?`<div class="fh">${f.h}</div>`:''}<textarea class="field-input" placeholder="${f.p||''}" id="f${i}"></textarea></div>`;
+    if(f.t==='opts') return `<div class="fg"><div class="fl">${f.l}</div>${f.h?`<div class="fh">${f.h}</div>`:''}<div class="fopts">${f.o.map(o=>`<button class="opt" onclick="this.classList.toggle('sel')">${o}</button>`).join('')}</div></div>`;
+    return '';
+  }).join('');
+}
+
+function stTab(t){
+  ['learn','sheet','ai'].forEach(x=>{
+    document.getElementById('st-'+x).style.display=x===t?'block':'none';
+    document.getElementById('stb-'+(x==='sheet'?'sheet':x==='ai'?'ai':'learn')).classList.toggle('active',x===t);
+  });
+}
+
+function goBackPillar(){openPillar(curSectionPillar);}
+
+function selectTrack(track){
+  document.getElementById('tk-grid').style.display='none';
+  const steps=track==='build'?CONVERT_BUILD:CONVERT_AUDIT;
+  const wrap=document.getElementById('cv-steps-wrap');
+  wrap.style.display='block';
+  wrap.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><button class="btn btn-g btn-sm" onclick="document.getElementById('tk-grid').style.display='grid';document.getElementById('cv-steps-wrap').style.display='none'">← Change Track</button><span style="font-size:13px;color:var(--t2)">${track==='build'?'Building from scratch':'Auditing existing system'}</span></div><div class="cv-steps">${steps.map((s,i)=>`<div class="cv"><div class="cv-n ${s.status}">${s.status==='done'?'✓':i+1}</div><div class="cv-b"><div class="cv-t">${s.title}</div><div class="cv-d">${s.desc}</div><div class="cv-checks">${s.checks.map(c=>`<label class="cv-check"><input type="checkbox"/> ${c}</label>`).join('')}</div></div></div>`).join('')}</div>`;
+}
+
+function studioNav(tab){
+  ['audience','loop','strategy','formats','mix','sells','gen'].forEach(t=>{
+    document.getElementById('s-'+t).style.display=t===tab?'block':'none';
+    document.getElementById('snav-'+t).classList.toggle('active',t===tab);
+  });
+  if(tab==='audience') renderStudioAudience();
+  if(tab==='strategy') loadContentFramework();
+  if(tab==='gen')      renderFrameworkPreview();
+}
+
+// Save the Content Framework selections — scoped to the current brand.
+function saveContentFramework(){
+  const root = document.getElementById('framework-fields');
+  if(!root) return;
+  const fw = { formats:[], cadence:[], goal:[], savedAt:new Date().toISOString() };
+  root.querySelectorAll('.fg').forEach(group => {
+    const key = group.getAttribute('data-fw');
+    if(!key) return;
+    fw[key] = Array.from(group.querySelectorAll('.opt.sel')).map(b => b.textContent.trim());
+  });
+  BRAND_STATE.framework = fw;
+  const { brand } = getCurrentBrand();
+  if(brand?.key) FRAMEWORKS_BY_BRAND[brand.key] = fw;
+
+  const note = document.getElementById('fw-saved-note');
+  if(note){
+    const pieces = [
+      fw.formats.length ? `${fw.formats.length} format${fw.formats.length>1?'s':''}` : null,
+      fw.cadence[0] || null,
+      fw.goal[0] || null,
+    ].filter(Boolean).join(' · ');
+    note.textContent = pieces ? `Saved · ${pieces}` : 'Saved (no selections yet)';
+  }
+  // Refresh the Generate preview so it picks up the new framework immediately
+  renderFrameworkPreview();
+}
+
+// Load saved framework selections back into the worksheet when the user returns.
+function loadContentFramework(){
+  const { brand } = getCurrentBrand();
+  const fw = (brand?.key && FRAMEWORKS_BY_BRAND[brand.key]) || BRAND_STATE.framework;
+  if(!fw) return;
+  BRAND_STATE.framework = fw;
+  const root = document.getElementById('framework-fields');
+  if(!root) return;
+  root.querySelectorAll('.fg').forEach(group => {
+    const key = group.getAttribute('data-fw');
+    if(!key) return;
+    const selected = new Set(fw[key] || []);
+    group.querySelectorAll('.opt').forEach(btn => {
+      btn.classList.toggle('sel', selected.has(btn.textContent.trim()));
+    });
+  });
+  const note = document.getElementById('fw-saved-note');
+  if(note && fw.savedAt){
+    note.textContent = `Last saved ${new Date(fw.savedAt).toLocaleString()}`;
+  }
+}
+
+// Compact human-readable summary of the saved framework for the Generate tab.
+function buildFrameworkSummary(){
+  const fw = BRAND_STATE.framework || {};
+  const a  = BRAND_STATE.audience || {};
+  const parts = [];
+  if(a.clientName)     parts.push(`Audience: ${a.clientName}`);
+  if(fw.formats?.length) parts.push(`Formats: ${fw.formats.join(', ')}`);
+  if(fw.cadence?.length) parts.push(`Cadence: ${fw.cadence.join(', ')}`);
+  if(fw.goal?.length)    parts.push(`Goal: ${fw.goal.join(', ')}`);
+  return parts.join(' · ');
+}
+
+function renderFrameworkPreview(){
+  const host = document.getElementById('gen-framework-preview');
+  if(!host) return;
+  const summary = buildFrameworkSummary();
+  const { brand } = getCurrentBrand();
+  if(!summary){
+    host.innerHTML = `<div style="font-size:12px;color:var(--t3)">No framework saved yet for ${brand?.name||'this brand'}. <span style="cursor:pointer;text-decoration:underline;color:var(--brand)" onclick="studioNav('strategy')">Build it →</span></div>`;
+    return;
+  }
+  host.innerHTML = `<div style="font-size:12px;color:var(--t2);line-height:1.55"><strong style="color:var(--text)">Generating for ${brand?.name||'current brand'} →</strong> ${summary}</div>`;
+}
+
+function renderStudioAudience(){
+  const a=BRAND_STATE.audience;
+  const el=document.getElementById('studio-audience-content');
+  if(!a.completed){
+    // NOT YET FILLED — show locked state with prompt
+    el.innerHTML=`
+      <div style="background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:28px;text-align:center;box-shadow:var(--sh)">
+        <div style="font-size:28px;margin-bottom:12px">🔒</div>
+        <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:500;margin-bottom:6px">Complete Messaging → Audience first</div>
+        <div style="font-size:13px;color:var(--t2);max-width:360px;margin:0 auto 16px;line-height:1.6">Your audience definition lives in the Messaging pillar. Complete it once and it flows automatically into Content Studio — no duplicate work.</div>
+        <button class="btn btn-p" onclick="openSection(2,'audience')">Go to Messaging → Audience →</button>
+      </div>`;
+  } else {
+    // FILLED — show populated, read-only summary + content context
+    el.innerHTML=`
+      <div style="background:var(--bl);border:1px solid var(--bm);border-radius:var(--r);padding:16px 18px;margin-bottom:14px;display:flex;align-items:flex-start;gap:12px">
+        <div style="font-size:20px;flex-shrink:0">✓</div>
+        <div style="flex:1">
+          <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:#8B6F2E;margin-bottom:6px">Pulled from Messaging → Audience</div>
+          <div style="font-size:13px;color:var(--text);line-height:1.6">
+            ${a.clientName?`<strong>Ideal client:</strong> ${a.clientName}<br>`:''}
+            ${a.desiredOutcome?`<strong>What they want:</strong> ${a.desiredOutcome}<br>`:''}
+            ${a.dailyLife?`<strong>Their frustration:</strong> ${a.dailyLife.slice(0,120)}${a.dailyLife.length>120?'...':''}`:''}
+          </div>
+        </div>
+        <button class="btn btn-g btn-sm" onclick="openSection(2,'audience')" style="flex-shrink:0">Edit →</button>
+      </div>
+      <div class="card" style="margin-bottom:12px">
+        <div class="ct" style="margin-bottom:6px">Content-specific audience questions</div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:12px">These extend your audience definition specifically for content strategy.</div>
+        <div class="worksheet">
+          <div class="fg"><div class="fl">What is the core problem your content addresses?</div><div class="fh">Pulled from your audience — refine for content if needed.</div><input class="field-input" id="cs-aud-problem" placeholder="e.g. Overwhelmed by clutter but don't know where to start" value="${a.dailyLife?a.dailyLife.split('.')[0]:''}"/></div>
+          <div class="fg"><div class="fl">What does ${a.clientName||'your ideal client'} search for when they're stuck?</div><div class="fh">Think hashtags, Google searches, questions they ask</div><input class="field-input" id="cs-aud-search" placeholder="e.g. 'how to organize a small pantry', 'clutter overwhelm'"/></div>
+          <div class="fg"><div class="fl">What emotion do you want them to feel after consuming your content?</div><div class="fopts">
+            <button class="opt" onclick="this.classList.toggle('sel')">Seen & understood</button>
+            <button class="opt" onclick="this.classList.toggle('sel')">Inspired to act</button>
+            <button class="opt" onclick="this.classList.toggle('sel')">Educated & confident</button>
+            <button class="opt" onclick="this.classList.toggle('sel')">Trust in you</button>
+            <button class="opt" onclick="this.classList.toggle('sel')">Hopeful about change</button>
+          </div></div>
+        </div>
+        <div class="save-r" style="margin-top:12px">
+          <button class="btn btn-b btn-sm" onclick="generateAudienceContent()">✦ Generate content ideas for ${a.clientName||'my audience'}</button>
+        </div>
+        <div class="gen-out" id="cs-aud-out" style="display:none;margin-top:12px"></div>
+      </div>`;
+  }
+}
+
+async function generateAudienceContent(){
+  if(busy)return;busy=true;
+  const a=BRAND_STATE.audience;
+  const out=document.getElementById('cs-aud-out');
+  out.style.display='block';out.innerHTML=dots();
+  const problem=document.getElementById('cs-aud-problem')?.value||a.dailyLife;
+  const search=document.getElementById('cs-aud-search')?.value||'';
+  const emotions=Array.from(document.querySelectorAll('#studio-audience-content .opt.sel')).map(e=>e.textContent).join(', ')||'seen and understood';
+  const r=await callClaude(
+    `Generate 5 content ideas specifically for my ideal client ${a.clientName||''}. Their core problem: "${problem}". They search for: "${search}". I want them to feel: ${emotions}. For each idea, give a format (Reel/Carousel/Caption/Story) and a one-sentence hook.`,
+    'User is in Content Studio → Audience generating personalized content ideas.'
+  );
+  out.textContent=r;busy=false;
+}
+
+function resTab(tab){
+  document.getElementById('r-vault').style.display=tab==='vault'?'block':'none';
+  document.getElementById('r-lib').style.display=tab==='lib'?'block':'none';
+  document.getElementById('rtab-vault').classList.toggle('active',tab==='vault');
+  document.getElementById('rtab-lib').classList.toggle('active',tab==='lib');
+}
+
+function saveWS(){
+  const btn=event.target;
+  // If saving Messaging → Audience, persist to shared state
+  if(curSection && curSection.id==='audience' && curSectionPillar===2){
+    const f0=document.getElementById('f0');
+    const f1=document.getElementById('f1');
+    const f2=document.getElementById('f2');
+    const f3=document.getElementById('f3');
+    if(f0) BRAND_STATE.audience.clientName=f0.value.trim();
+    if(f1) BRAND_STATE.audience.dailyLife=f1.value.trim();
+    if(f2) BRAND_STATE.audience.failedAttempts=f2.value.trim();
+    if(f3) BRAND_STATE.audience.desiredOutcome=f3.value.trim();
+    // Mark complete if at least name + one other field filled
+    BRAND_STATE.audience.completed = !!(BRAND_STATE.audience.clientName && (BRAND_STATE.audience.dailyLife || BRAND_STATE.audience.desiredOutcome));
+    // Update AI system context with new audience data
+    updateAIContext();
+  }
+  // If saving Messaging → Narrative
+  if(curSection && curSection.id==='narrative' && curSectionPillar===2){
+    const f0=document.getElementById('f0');
+    const f2=document.getElementById('f2');
+    if(f0) BRAND_STATE.narrative.valueProp=f0.value.trim();
+    if(f2) BRAND_STATE.narrative.neverSay=f2.value.trim();
+    // Collect selected voice options
+    BRAND_STATE.narrative.voice=Array.from(document.querySelectorAll('#ws-fields .opt.sel')).map(e=>e.textContent);
+  }
+  btn.textContent='Saved ✓';btn.style.background='#6BBD7A';
+  setTimeout(()=>{btn.textContent='Save Answers';btn.style.background='';},2000);
+}
+
+function updateAIContext(){
+  // Rebuild dynamic system context from saved state — called after any save
+  const a=BRAND_STATE.audience;
+  if(a.completed){
+    dynamicCtx=`Client's ideal audience: Name: ${a.clientName||'not set'}. Daily life/frustration: ${a.dailyLife||'not set'}. Failed attempts: ${a.failedAttempts||'not set'}. Desired outcome: ${a.desiredOutcome||'not set'}.`;
+  }
+  if(BRAND_STATE.narrative.valueProp){
+    dynamicCtx+=` Value proposition: "${BRAND_STATE.narrative.valueProp}".`;
+  }
+}
+
+let dynamicCtx = '';
+
+function switchBrand(b){
+  currentBrandIndex = b;
+  document.querySelectorAll('.brand-item').forEach(el=>el.classList.remove('current'));
+  if (event && event.currentTarget) event.currentTarget.classList.add('current');
+  applyCurrentBrand();
+}
+
+// Apply the currently-selected brand to dashboard UI (badge, snapshot, health bar, chat opener)
+function applyCurrentBrand(){
+  const { brand, content } = getCurrentBrand();
+  if (!brand) return;
+
+  // Sidebar client badge — show "Cabri Caldwell · [Active Brand]"
+  const nameEl = document.getElementById('client-name-badge');
+  const typeEl = document.getElementById('client-type-badge');
+  if (nameEl) nameEl.textContent = CLIENT_CONFIG.clientName || 'Cabri Caldwell';
+  if (typeEl) typeEl.textContent = brand.name;
+
+  // Health bar score reflects current brand
+  if (typeof content.health === 'number') {
+    const hs = document.querySelector('.hs');
+    const hf = document.querySelector('.hf');
+    const hd = document.querySelector('.hd');
+    if (hs) hs.innerHTML = `${content.health}<small>/100</small>`;
+    if (hf) hf.style.width = content.health + '%';
+    if (hd) hd.textContent = `${brand.name} · ${brand.stage}`;
+  }
+
+  // Swap in this brand's saved Content Framework (or reset to empty)
+  BRAND_STATE.framework = (brand?.key && FRAMEWORKS_BY_BRAND[brand.key])
+    || { formats:[], cadence:[], goal:[], savedAt:'' };
+
+  // Brand snapshot card
+  renderBrandSnapshot();
+
+  // Refresh framework UI if Strategy / Generate tabs are currently visible
+  if (document.getElementById('s-strategy')?.style.display === 'block') loadContentFramework();
+  if (document.getElementById('s-gen')?.style.display === 'block')      renderFrameworkPreview();
+
+  // Brand-aware pillar percentages — dashboard cards + sidebar nav items
+  renderPillarProgress();
+
+  // Brand-aware audit view (and the sidebar Brand Audit badge)
+  renderAuditView();
+
+  // Dashboard chat opener — make it brand-aware
+  const opener = document.getElementById('dash-chat-opener');
+  if (opener) {
+    opener.textContent = `Working on ${brand.name}. I know its foundation, voice, and positioning. Ask me what to build next or how to extend it across messaging, activation, and conversion.`;
+  }
+
+  // Refresh AI context so anything called downstream knows the active brand
+  dynamicCtx = buildClientContext() + buildActiveBrandContext();
+}
+
+// Update sidebar pillar pct badges + dashboard pillar cards to reflect current brand
+function renderPillarProgress(){
+  const { content } = getCurrentBrand();
+  const p = content.pillars || {};
+  const order = [
+    ['brand',     'p1', 1],
+    ['messaging', 'p2', 2],
+    ['activate',  'p3', 3],
+    ['convert',   'p4', 4],
+    ['automate',  'p5', 5],
+  ];
+  order.forEach(([key, cls, n]) => {
+    const pct = (typeof p[key] === 'number') ? p[key] : null;
+    if (pct === null) return;
+
+    // Sidebar
+    const sb = document.querySelector(`#ni-${cls} .pct`);
+    if (sb) sb.textContent = pct + '%';
+
+    // Dashboard pillar card
+    const pc = document.querySelector(`.pc.${cls}`);
+    if (pc) {
+      const fill = pc.querySelector('.pf');
+      const txt  = pc.querySelector('.pc-pct');
+      if (fill) fill.style.width = pct + '%';
+      if (txt)  txt.textContent  = pct + '%';
+    }
+  });
+}
+
+// Render the Brand Audit view from current brand's audit + recommendations
+function renderAuditView(){
+  const { brand, content } = getCurrentBrand();
+  if (!brand) return;
+  const audit = content.audit || [];
+  const recs  = content.recommendations || [];
+
+  const scoreClass = s => s >= 70 ? 'sg' : s >= 45 ? 'sm' : 'sl';
+
+  // Page title + subhead now name the active brand
+  const titleEl = document.getElementById('audit-title');
+  const subEl   = document.getElementById('audit-sub');
+  if (titleEl) titleEl.textContent = `${brand.name} — Brand Health Audit`;
+  if (subEl) {
+    const h = (typeof content.health === 'number') ? `Overall ${content.health}/100. ` : '';
+    subEl.textContent = `${h}Scored across 8 dimensions of brand strength.`;
+  }
+
+  // Audit grid
+  const grid = document.getElementById('audit-grid');
+  if (grid) {
+    grid.innerHTML = audit.map(a => `
+      <div class="ac">
+        <div class="ac-l">${a.label}</div>
+        <div class="ac-row"><div class="ac-n ${scoreClass(a.score)}">${a.score}</div><div class="ac-of">/100</div></div>
+        <div class="ac-note">${a.note}</div>
+      </div>
+    `).join('');
+  }
+
+  // Recommendations
+  const recsEl = document.getElementById('audit-recs');
+  if (recsEl) {
+    recsEl.innerHTML = recs.map(r => `
+      <div style="padding:10px 12px;background:var(--s2);border-radius:var(--rs);font-size:13px;line-height:1.6">
+        <strong>${r.tag}:</strong> ${r.body}
+      </div>
+    `).join('') || `<div style="padding:10px 12px;background:var(--s2);border-radius:var(--rs);font-size:13px;color:var(--t2)">Recommendations populate once this brand's foundation is built out.</div>`;
+  }
+
+  // Sidebar Brand Audit % badge
+  const sbAudit = document.querySelector('#ni-audit .pct');
+  if (sbAudit && typeof content.health === 'number') sbAudit.textContent = content.health;
+}
+
+function buildActiveBrandContext(){
+  const { brand, content } = getCurrentBrand();
+  if (!brand) return '';
+  let ctx = ` Active brand: ${brand.name} (${brand.industry}, ${brand.stage}).`;
+  if (content.positioning) ctx += ` Positioning: ${content.positioning}.`;
+  if (content.mission && !content.mission.startsWith('To be')) ctx += ` Mission: ${content.mission}.`;
+  if (content.tagline) ctx += ` Tagline: "${content.tagline}".`;
+  if (content.audiencePrimary && !content.audiencePrimary.startsWith('To be')) ctx += ` Primary audience: ${content.audiencePrimary}.`;
+  return ctx;
+}
+
+function renderBrandSnapshot(){
+  const { brand, content } = getCurrentBrand();
+  const nameEl = document.getElementById('bs-brand-name');
+  const body   = document.getElementById('brand-snapshot-body');
+  if (!body || !brand) return;
+  if (nameEl) nameEl.textContent = brand.name;
+
+  const tbd = v => !v || /^TBD/i.test(v) || /^To be/i.test(v);
+  const block = (label, value, fallback) => `
+    <div>
+      <div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:4px">${label}</div>
+      <div style="${tbd(value)?'color:var(--t3);font-style:italic':''}">${tbd(value)?(fallback||'To be defined with Cabri'):value}</div>
+    </div>`;
+
+  const valuesBlock = (() => {
+    const v = content.values || [];
+    if (!v.length || /^To be/i.test(v[0])) {
+      return block('Values', null, 'Define 3–5 core values with Cabri');
+    }
+    return `
+      <div>
+        <div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:4px">Values</div>
+        <ul style="list-style:none;padding:0;margin:0">${v.slice(0,4).map(x=>`<li style="padding:2px 0">• ${x}</li>`).join('')}</ul>
+      </div>`;
+  })();
+
+  body.innerHTML = `
+    ${block('Essence',     content.essence)}
+    ${block('Positioning', content.positioning)}
+    ${block('Mission',     content.mission)}
+    ${block('Primary audience', content.audiencePrimary)}
+    ${valuesBlock}
+    ${block('Personality', content.personality)}
+    <div style="grid-column:1/-1;display:flex;gap:14px;align-items:center;margin-top:4px;padding-top:12px;border-top:1px solid var(--border);font-size:12px;color:var(--t2)">
+      ${content.tagline ? `<span><strong style="color:var(--text)">Tagline:</strong> ${content.tagline}</span>` : ''}
+      ${content.notionUrl ? `<a href="${content.notionUrl}" target="_blank" style="color:var(--brand);text-decoration:none;margin-left:auto">Open in Notion ↗</a>` : ''}
+    </div>`;
+}
+
+function addBrand(){alert('In the full build, this opens a new brand onboarding flow.');}
+function jumpAI(){document.getElementById('dash-inp').focus();nav('dash');}
+
+// ── SUBHEADING — changes once per session (on login/load) ──
+const PHRASES = {
+  0: { // Sunday
+    0: ["Sunday is when the quiet decisions get made. Pick the brand that needs you most this week.","The brands that endure are built from identity, not urgency.","Sundays are for founders who build on purpose, not by accident."],
+    1: ["Every brand that matters started with one clear belief. Yours is in here.","The world doesn't need another brand. It needs yours — built on what you actually believe.","Clarity compounds. The clearer you get today, the faster everything moves tomorrow."],
+    2: ["Tomorrow is Monday. Your brand gets a fresh week. So do you.","The most fulfilling work isn't about what you achieve. It's about what you refuse to compromise.","Rest is part of building. You can't lead a brand on empty."],
+  },
+  1: { // Monday
+    0: ["New week. What does your brand need from you before anything else gets in the way?","Monday belongs to founders who decided what they stand for before they showed up.","The best week starts with one clear conviction. What's yours?"],
+    1: ["Conviction is the only brand strategy that can't be copied.","The founders who build brands that last stopped trying to be for everyone.","Your brand is a daily decision to show up as what you actually believe."],
+    2: ["What you build tonight, your audience finds tomorrow.","The gap between your vision and your visibility is exactly what this is for.","Every decision you make in here is a decision about who your brand is becoming."],
+  },
+  2: { // Tuesday
+    0: ["The best brand decisions come from clarity, not urgency. You have time.","You don't need more ideas. You need to trust the ones you already have.","Founders who know what they believe make faster decisions. Everything else is noise."],
+    1: ["Your brand is only as clear to others as it is to you right now.","The brands people can't stop talking about didn't get there by accident.","Specificity is not a limitation. It's the most powerful brand move you can make."],
+    2: ["You don't need more ideas. You need to trust the ones you already have.","The work you're doing here compounds. Keep going.","Great brands aren't built in a day — but they are built in consistent moments like this one."],
+  },
+  3: { // Wednesday
+    0: ["Halfway through the week. Are you building — or catching up?","The brands that move fastest are built by founders who made peace with their point of view.","Midweek check: is your brand saying what you actually believe today?"],
+    1: ["The gap between your vision and your visibility is exactly what this is for.","Brands built with intention outlast brands built with urgency every time.","The middle of the week is where most founders lose momentum. You're still here."],
+    2: ["The work you're doing here compounds. Keep going.","Your brand doesn't need to be perfect. It needs to be unmistakably yours.","What moved today because of your conviction? That's the whole point."],
+  },
+  4: { // Thursday
+    0: ["One good brand decision today compounds into next month.","Almost there. The founders who finish strong are the ones who stayed specific.","Your audience doesn't need more content. They need more conviction."],
+    1: ["Most founders know what they do. Very few know what they stand for.","The brands that sustain you are built on who you are — not what you're chasing.","Identity is the only positioning that can't be disrupted."],
+    2: ["The most fulfilling work isn't about what you achieve. It's about what you refuse to compromise.","Conviction doesn't need an audience to be real. But it does need to be named.","What you protect in your brand is as important as what you build into it."],
+  },
+  5: { // Friday
+    0: ["End of week. What moved because of your conviction this week?","Friday belongs to founders who showed up for their brand even when no one was watching.","What did your brand do this week that only your brand could do?"],
+    1: ["What moved without you this week? That's your brand working.","The best brands create pull. Not just posts.","Success is a destination. Identity is the whole journey."],
+    2: ["The best founders protect their creative energy. You're here. That counts.","End of week audit: did your brand reflect what you actually believe?","Rest well. The conviction you protect over the weekend shows up Monday."],
+  },
+  6: { // Saturday
+    0: ["The brands people can't stop talking about were built in moments like this one.","Saturday founders build what Sunday audiences discover.","You're here on a Saturday. That says something about what you believe this is worth."],
+    1: ["The world doesn't need another brand. It needs yours — built on what you actually believe.","Fulfillment doesn't come from the milestone. It comes from building something unmistakably yours.","The most lasting brands aren't built toward success. They're built from identity."],
+    2: ["Brands built with intention outlast brands built with urgency every time.","The most fulfilling work isn't about what you achieve. It's about what you refuse to compromise.","What you're building here is bigger than content. It's a body of belief."],
+  },
+};
+
+function getTimePeriod(){
+  const h=new Date().getHours();
+  return h>=5&&h<12?0:h>=12&&h<17?1:2;
+}
+
+function initRotatingSubheading(){
+  const day=new Date().getDay();
+  const period=getTimePeriod();
+  const pool=PHRASES[day]?.[period]||PHRASES[1][1];
+  // Pick a random phrase from the pool — stays fixed for this session
+  const phrase=pool[Math.floor(Math.random()*pool.length)];
+  const el=document.getElementById('dash-sub');
+  if(el) el.textContent=phrase;
+}
+/* orphan PHRASES fragment removed below — was leftover from a template refactor and not valid JS */
+const _ORPHAN_PHRASES_REMOVED = true;
+const _IGNORED_PHRASES_BLOCK = {
+  1: { // Monday
+    0: [
+      "New week. What does your brand need from you before anything else gets in the way?",
+      "Monday belongs to founders who decided what they stand for before they showed up.",
+      "The best week starts with one clear conviction. What's yours?",
+    ],
+    1: [
+      "Conviction is the only brand strategy that can't be copied.",
+      "The founders who build brands that last are the ones who stopped trying to be for everyone.",
+      "Your brand is a daily decision to show up as what you actually believe.",
+    ],
+    2: [
+      "What you build tonight, your audience finds tomorrow.",
+      "The gap between your vision and your visibility is exactly what this is for.",
+      "Every decision you make in here is a decision about who your brand is becoming.",
+    ],
+  },
+  2: { // Tuesday
+    0: [
+      "The best brand decisions come from clarity, not urgency. You have time.",
+      "You don't need more ideas. You need to trust the ones you already have.",
+      "Founders who know what they believe make faster decisions. Everything else is noise.",
+    ],
+    1: [
+      "Your brand is only as clear to others as it is to you right now.",
+      "The brands people can't stop talking about didn't get there by accident.",
+      "Specificity is not a limitation. It's the most powerful brand move you can make.",
+    ],
+    2: [
+      "You don't need more ideas. You need to trust the ones you already have.",
+      "The work you're doing here compounds. Keep going.",
+      "Great brands aren't built in a day — but they are built in consistent moments like this one.",
+    ],
+  },
+  3: { // Wednesday
+    0: [
+      "Halfway through the week. Are you building — or catching up?",
+      "The brands that move fastest are built by founders who made peace with their point of view.",
+      "Midweek check: is your brand saying what you actually believe today?",
+    ],
+    1: [
+      "The gap between your vision and your visibility is exactly what this is for.",
+      "Brands built with intention outlast brands built with urgency every time.",
+      "The middle of the week is where most founders lose momentum. You're still here.",
+    ],
+    2: [
+      "The work you're doing here compounds. Keep going.",
+      "Your brand doesn't need to be perfect. It needs to be unmistakably yours.",
+      "What moved today because of your conviction? That's the whole point.",
+    ],
+  },
+  4: { // Thursday
+    0: [
+      "One good brand decision today compounds into next month.",
+      "Almost there. The founders who finish strong are the ones who stayed specific.",
+      "Your audience doesn't need more content. They need more conviction.",
+    ],
+    1: [
+      "Most founders know what they do. Very few know what they stand for.",
+      "The brands that sustain you are built on who you are — not what you're chasing.",
+      "Identity is the only positioning that can't be disrupted.",
+    ],
+    2: [
+      "The most fulfilling work isn't about what you achieve. It's about what you refuse to compromise.",
+      "Conviction doesn't need an audience to be real. But it does need to be named.",
+      "What you protect in your brand is as important as what you build into it.",
+    ],
+  },
+  5: { // Friday
+    0: [
+      "End of week. What moved because of your conviction this week?",
+      "Friday belongs to founders who showed up for their brand even when no one was watching.",
+      "What did your brand do this week that only your brand could do?",
+    ],
+    1: [
+      "What moved without you this week? That's your brand working.",
+      "The best brands create pull. Not just posts.",
+      "Success is a destination. Identity is the whole journey.",
+    ],
+    2: [
+      "The best founders protect their creative energy. You're here. That counts.",
+      "End of week audit: did your brand reflect what you actually believe?",
+      "Rest well. The conviction you protect over the weekend shows up Monday.",
+    ],
+  },
+  6: { // Saturday
+    0: [
+      "The brands people can't stop talking about were built in moments like this one.",
+      "Saturday founders build what Sunday audiences discover.",
+      "You're here on a Saturday. That says something about what you believe this is worth.",
+    ],
+    1: [
+      "The world doesn't need another brand. It needs yours — built on what you actually believe.",
+      "Fulfillment doesn't come from the milestone. It comes from building something unmistakably yours.",
+      "The most lasting brands aren't built toward success. They're built from identity.",
+    ],
+    2: [
+      "Brands built with intention outlast brands built with urgency every time.",
+      "The most fulfilling work isn't about what you achieve. It's about what you refuse to compromise.",
+      "What you're building here is bigger than content. It's a body of belief.",
+    ],
+  },
+};
+
+
+function getTimePeriod() {
+  const h = new Date().getHours();
+  if (h >= 5 && h < 12) return 0;  // morning
+  if (h >= 12 && h < 17) return 1; // afternoon
+  return 2;                          // evening
+}
+
+function getDayPhrases() {
+  const day = new Date().getDay();
+  const period = getTimePeriod();
+  return PHRASES[day][period] || PHRASES[1][1];
+}
+
+function initRotatingSubheading() {
+  const phrases = getDayPhrases();
+  phraseIndex = 0;
+
+  // Set initial phrase (already visible from HTML)
+  const el = document.getElementById('dash-sub');
+  if (el) el.textContent = phrases[0];
+
+  // Start rotation every 7 seconds if more than one phrase
+  if (phrases.length > 1) {
+    phraseInterval = setInterval(() => {
+      rotateTo((phraseIndex + 1) % phrases.length);
+    }, 7000);
+  }
+}
+
+let currentPlatform = 'instagram';
+const metricsHistory = { instagram:[], tiktok:[], email:[], linkedin:[] };
+
+const METRIC_FIELDS = {
+  instagram: [
+    {id:'ig-followers',label:'Followers'},
+    {id:'ig-reach',label:'Reach'},
+    {id:'ig-eng',label:'Eng. Rate %'},
+    {id:'ig-posts',label:'Posts'},
+    {id:'ig-visits',label:'Profile Visits'},
+    {id:'ig-clicks',label:'Link Clicks'},
+  ],
+  tiktok: [
+    {id:'tt-followers',label:'Followers'},
+    {id:'tt-views',label:'Views'},
+    {id:'tt-watch',label:'Avg Watch (s)'},
+    {id:'tt-posts',label:'Videos'},
+    {id:'tt-likes',label:'Likes'},
+    {id:'tt-shares',label:'Shares'},
+  ],
+  email: [
+    {id:'em-subs',label:'Subscribers'},
+    {id:'em-open',label:'Open Rate %'},
+    {id:'em-click',label:'Click Rate %'},
+    {id:'em-sent',label:'Emails Sent'},
+    {id:'em-new',label:'New Subs'},
+    {id:'em-unsub',label:'Unsubs'},
+  ],
+  linkedin: [
+    {id:'li-followers',label:'Followers'},
+    {id:'li-impressions',label:'Impressions'},
+    {id:'li-eng',label:'Eng. Rate %'},
+    {id:'li-posts',label:'Posts'},
+    {id:'li-visits',label:'Profile Views'},
+    {id:'li-new',label:'New Connections'},
+  ],
+};
+
+function switchPlatformTab(p){
+  currentPlatform=p;
+  ['instagram','tiktok','email','linkedin'].forEach(t=>{
+    document.getElementById('pfields-'+t).style.display=t===p?'block':'none';
+    document.getElementById('ptab-'+t).classList.toggle('active',t===p);
+  });
+  renderMetricsHistory();
+}
+
+function saveMetrics(){
+  const fields=METRIC_FIELDS[currentPlatform];
+  const entry={week:getCurrentWeekLabel(),date:Date.now(),values:{}};
+  let hasData=false;
+  fields.forEach(f=>{
+    const v=document.getElementById(f.id)?.value;
+    if(v){entry.values[f.label]=parseFloat(v);hasData=true;}
+  });
+  if(!hasData){
+    const msg=document.getElementById('metrics-saved-msg');
+    msg.textContent='Enter at least one metric first.';
+    msg.style.color='var(--sl, #C05A3A)';
+    setTimeout(()=>{msg.textContent='';},2500);
+    return;
+  }
+  metricsHistory[currentPlatform].unshift(entry);
+  // Keep last 8 weeks
+  if(metricsHistory[currentPlatform].length>8) metricsHistory[currentPlatform].pop();
+  // Clear fields
+  fields.forEach(f=>{const el=document.getElementById(f.id);if(el)el.value='';});
+  const msg=document.getElementById('metrics-saved-msg');
+  msg.textContent='✓ Saved for week of '+entry.week;
+  msg.style.color='#3A9A3A';
+  setTimeout(()=>{msg.textContent='';},3000);
+  renderMetricsHistory();
+}
+
+function getCurrentWeekLabel(){
+  const d=new Date();
+  const month=d.toLocaleString('default',{month:'short'});
+  return `${month} ${d.getDate()}`;
+}
+
+function renderMetricsHistory(){
+  const history=metricsHistory[currentPlatform];
+  const wrap=document.getElementById('metrics-history-wrap');
+  const table=document.getElementById('metrics-history-table');
+  if(history.length===0){wrap.style.display='none';return;}
+  wrap.style.display='block';
+  // Build column headers from most recent entry
+  const keys=Object.keys(history[0].values);
+  table.innerHTML=`
+    <thead><tr>
+      <th>Week</th>
+      ${keys.map(k=>`<th>${k}</th>`).join('')}
+    </tr></thead>
+    <tbody>
+      ${history.map((entry,i)=>{
+        const prev=history[i+1];
+        return `<tr>
+          <td style="font-weight:500;color:var(--text)">${entry.week}</td>
+          ${keys.map(k=>{
+            const val=entry.values[k]??'—';
+            const prevVal=prev?.values[k];
+            let delta='';
+            if(prevVal!=null && val!=='—'){
+              const diff=val-prevVal;
+              if(diff>0) delta=`<span class="mh-delta mh-up">↑${Math.abs(diff)}</span>`;
+              else if(diff<0) delta=`<span class="mh-delta mh-down">↓${Math.abs(diff)}</span>`;
+              else delta=`<span class="mh-delta mh-flat">—</span>`;
+            }
+            return `<td>${val} ${delta}</td>`;
+          }).join('')}
+        </tr>`;
+      }).join('')}
+    </tbody>`;
+}
+
+async function analyzeMetrics(){
+  if(busy)return;
+  const history=metricsHistory[currentPlatform];
+  const out=document.getElementById('metrics-ai-out');
+  const txt=document.getElementById('metrics-ai-text');
+  out.style.display='block';
+  txt.innerHTML=dots();
+  let dataStr='';
+  if(history.length===0){
+    txt.textContent='Log at least one week of metrics first, then I can analyze your trends.';
+    return;
+  }
+  dataStr=history.slice(0,4).map(e=>`Week of ${e.week}: ${Object.entries(e.values).map(([k,v])=>`${k}: ${v}`).join(', ')}`).join('\n');
+  busy=true;
+  const r=await callClaude(
+    `Analyze these ${currentPlatform} metrics for a luxury professional organizer and give 2-3 specific, actionable observations about trends, what's working, and what needs attention:\n\n${dataStr}`,
+    `User is reviewing their ${currentPlatform} metrics history in the Brand Dashboard.`
+  );
+  txt.textContent=r;
+  busy=false;
+}
+function dbTab(tab){
+  ['overview','brand','messaging','activate','convert','automate'].forEach(t=>{
+    document.getElementById('db-'+t).style.display=t===tab?'block':'none';
+    document.getElementById('dbt-'+t).classList.toggle('active',t===tab);
+  });
+  // Sync pain count from automate pillar state
+  if(tab==='automate'){
+    const cnt=selectedPains.size;
+    document.getElementById('db-pain-count').textContent=cnt;
+    document.getElementById('db-pain-bar').style.width=Math.min(cnt*8,100)+'%';
+  }
+}
+
+async function generatePulse(){
+  const el=document.getElementById('pulse-items');
+  el.innerHTML=`<div style="padding:8px;font-size:13px;color:var(--t3)">${dots()} Generating weekly pulse...</div>`;
+  const a=BRAND_STATE.audience;
+  const r=await callClaude(
+    `Generate a weekly brand pulse for this founder. Brand health: 72/100. Pillars: Brand 85%, Messaging 60%, Activate 40%, Convert 20%, Automate 0%. ${a.completed?`Ideal client: ${a.clientName}.`:''} Give exactly 3 bullet insights: one green (what's working), one amber (needs attention), one purple (highest-leverage action this week). Be specific, not generic. Each bullet max 20 words.`,
+    'User is viewing their weekly brand pulse dashboard. Return only the 3 insights as plain text, one per line, prefixed with GREEN:, AMBER:, or ACTION:'
+  );
+  const lines=r.split('\n').filter(l=>l.trim());
+  el.innerHTML=lines.map(l=>{
+    const isGood=l.startsWith('GREEN');const isAct=l.startsWith('ACTION');
+    const text=l.replace(/^(GREEN:|AMBER:|ACTION:)\s*/i,'');
+    return `<div class="pulse-item ${isGood?'good':isAct?'act':'warn'}"><div class="pulse-dot"></div>${text}</div>`;
+  }).join('');
+}
+
+async function generateReport(){
+  const el=document.getElementById('report-content');
+  el.innerHTML=`<div style="padding:16px;font-size:13px;color:var(--t3)">${dots()} Generating your May brand report...</div>`;
+  const a=BRAND_STATE.audience;
+  const r=await callClaude(
+    `Write a monthly brand health report for May 2026. Structure it as: 1) EXECUTIVE SUMMARY (2 sentences on overall trajectory), 2) WHAT MOVED THIS MONTH (2-3 specific observations about brand progress), 3) WHAT NEEDS ATTENTION (2 specific gaps), 4) HIGHEST-LEVERAGE FOCUS FOR JUNE (one clear priority, explained in 2 sentences). Brand scores: Brand 85%, Messaging 60%, Activate 40%, Convert 20%, Automate 0%. Overall health: 72/100, up 8 points. ${a.completed?`Ideal client: ${a.clientName}. Desired outcome: ${a.desiredOutcome}.`:''}`,
+    'User is generating their monthly brand report. Write in a clear, direct consulting voice — like a strategist reviewing with the founder.'
+  );
+  el.innerHTML=`<div class="report-body">${r}</div><div style="margin-top:14px;display:flex;justify-content:flex-end;gap:8px"><button class="btn btn-g btn-sm">Download PDF</button><button class="btn btn-p btn-sm" onclick="generateReport()">Regenerate</button></div>`;
+}
+
+async function generatePillarInsight(pillar){
+  const key=pillar.toLowerCase();
+  const el=document.getElementById('db-'+key+'-insight');
+  el.innerHTML=`<div style="padding:8px;font-size:13px;color:var(--t3)">${dots()} Generating ${pillar} insights...</div>`;
+  const scores={Brand:85,Messaging:60,Activate:40,Convert:20,Automate:0};
+  const r=await callClaude(
+    `Generate 2-3 specific insights for the ${pillar} pillar. Current completion: ${scores[pillar]}%. Give one green (strength), one amber (gap), and optionally one action item. Each max 20 words. Prefix with GREEN:, AMBER:, or ACTION:`,
+    `User is viewing the ${pillar} pillar dashboard.`
+  );
+  const lines=r.split('\n').filter(l=>l.trim());
+  el.innerHTML=lines.map(l=>{
+    const isGood=l.startsWith('GREEN');const isAct=l.startsWith('ACTION');
+    const text=l.replace(/^(GREEN:|AMBER:|ACTION:)\s*/i,'');
+    return `<div class="pulse-item ${isGood?'good':isAct?'act':'warn'}"><div class="pulse-dot"></div>${text}</div>`;
+  }).join('');
+}
+
+// ── AI ──
+const SYS=`You are the brand strategist inside a Brand OS platform — a premium brand strategy tool built by Arch Ann. You are helping a founder build their brand using the five-pillar framework: Brand → Messaging → Activate → Convert → Automate. Content framework: Audience + Format + Cadence = Strategy. Content loop: Problem (feel seen) → Journey (trust) → Aspiration (hope). Be specific and practical. Conversational answers: 2-4 sentences. Content generation: write the full piece.`;
+
+// ── BOOT ──
+// On page load, initialize OS from CLIENT_CONFIG.
+// In production, replace CLIENT_CONFIG values with data from your database
+// before this script runs. The osConfig from the intake form maps directly.
+document.addEventListener('DOMContentLoaded', () => {
+  initOS();
+});
+
+async function callClaude(msg,extra=''){
+  try{
+    const fullSys=SYS+(dynamicCtx?' '+dynamicCtx:'')+' '+extra;
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:fullSys,messages:[{role:'user',content:msg}]})});
+    const d=await r.json();return d.content?.[0]?.text||'Unable to respond.';
+  }catch(e){return 'Unable to reach Brand OS tools right now.';}
+}
+
+function dots(){return '<span class="dot">●</span><span class="dot">●</span><span class="dot">●</span>';}
+
+async function dashSend(){
+  if(busy)return;const inp=document.getElementById('dash-inp');const msg=inp.value.trim();if(!msg)return;
+  inp.value='';busy=true;const chat=document.getElementById('dash-chat');
+  chat.innerHTML+=`<div class="cm u">${msg}</div>`;
+  const tid='t'+Date.now();chat.innerHTML+=`<div class="cm" id="${tid}">${dots()}</div>`;
+  chat.scrollTop=chat.scrollHeight;
+  const r=await callClaude(msg,'User is on the main dashboard.');
+  document.getElementById(tid).textContent=r;chat.scrollTop=chat.scrollHeight;busy=false;
+}
+
+function secChip(q){document.getElementById('sec-ai-inp').value=q;secSend();}
+
+async function secSend(){
+  if(busy)return;const inp=document.getElementById('sec-ai-inp');const msg=inp.value.trim();if(!msg)return;
+  inp.value='';busy=true;const el=document.getElementById('sec-ai-resp');el.innerHTML=dots();
+  const extra=curSection?`User is working on "${curSection.title}" in the ${PILLARS[curSectionPillar].title} pillar.`:'';
+  const r=await callClaude(msg,extra);el.textContent=r;busy=false;
+}
+
+async function autoAISend(){
+  if(busy)return;const inp=document.getElementById('auto-ai-inp');const msg=inp.value.trim();if(!msg)return;
+  inp.value='';busy=true;const el=document.getElementById('auto-ai-resp');el.innerHTML=dots();
+  const r=await callClaude(msg,'User is in the Automate pillar asking about specific automations and tools.');
+  el.textContent=r;busy=false;
+}
+
+async function generateLoopContent(){
+  busy=true;const out=document.getElementById('loop-out');out.style.display='block';out.innerHTML=dots();
+  const r=await callClaude('Generate 3 short social media post ideas: one Problem post, one Journey post, one Aspiration post for a luxury professional organizer. Each post should be 1-3 sentences.','User is in Content Studio → The Loop.');
+  out.textContent=r;busy=false;
+}
+
+async function generateSellsContent(){
+  busy=true;const out=document.getElementById('sells-out');out.style.display='block';out.innerHTML=dots();
+  const r=await callClaude('Write 3 complete social media posts: a Belief post (illustrating worldview/addressing a problem), a Proof post (showing specific process over generic outcome), and an Opportunity post (using the curiosity loop to invite, not boss). Each should be ready to post.','User is in Content Studio → Content That Sells.');
+  out.textContent=r;busy=false;
+}
+
+async function studioGenerate(){
+  busy=true;
+  const out=document.getElementById('gen-out');
+  out.style.display='block';
+  out.innerHTML=dots();
+
+  const topic     = document.getElementById('gen-topic').value || 'brand and organizing';
+  const selected  = Array.from(document.querySelectorAll('#s-gen .opt.sel')).map(e=>e.textContent).join(', ') || 'Instagram caption';
+  const { brand, content } = getCurrentBrand();
+  const fw        = BRAND_STATE.framework || {};
+  const a         = BRAND_STATE.audience  || {};
+
+  // Build a rich, framework-driven prompt
+  const ctx = [
+    brand?.name ? `Brand: ${brand.name} (${brand.industry||''}).` : '',
+    content?.positioning ? `Positioning: ${content.positioning}` : '',
+    content?.personality ? `Brand personality: ${content.personality}` : '',
+    content?.tagline ? `Tagline: "${content.tagline}".` : '',
+    a.clientName ? `Ideal client: ${a.clientName}.` : '',
+    a.dailyLife ? `Their daily life/pain: ${a.dailyLife}.` : '',
+    a.desiredOutcome ? `Desired outcome: ${a.desiredOutcome}.` : '',
+    fw.formats?.length ? `Preferred formats (how they naturally communicate): ${fw.formats.join(', ')}.` : '',
+    fw.cadence?.length ? `Publishing cadence: ${fw.cadence.join(', ')}.` : '',
+    fw.goal?.length    ? `Content goal: ${fw.goal.join(', ')}.` : '',
+  ].filter(Boolean).join(' ');
+
+  const prompt = `Generate ${selected} about: "${topic}". Use this brand's Content Framework as constraints: ${ctx || '(no framework saved yet — fall back to general best practice)'} Match the brand's voice exactly. Output should be ready to publish, not a template.`;
+  const r = await callClaude(prompt, 'User is in Content Studio → Idea Generator. The Content Framework (audience + format + cadence) is the single source of truth for what to generate.');
+  out.textContent = r;
+  busy = false;
+}
+</script>
+</body>
+</html>
