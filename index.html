@@ -451,7 +451,7 @@ textarea.field-input{resize:vertical;min-height:76px;line-height:1.5}
         <button class="btn btn-g btn-sm" onclick="nav('audit')">Full Audit →</button>
       </div>
       <div class="pg">
-        <div class="pc p1" onclick="openPillar(1)"><div class="pc-n">01</div><div class="pc-t">Brand</div><div class="pc-bar"><div class="pt"><div class="pf" style="width:85%"></div></div><div class="pc-pct">85%</div></div><div class="pc-s">Core Beliefs · Visual Identity · Story · Guidelines</div><div class="pc-arr">→</div></div>
+        <div class="pc p1" onclick="openPillar(1)"><div class="pc-n">01</div><div class="pc-t">Brand</div><div class="pc-bar"><div class="pt"><div class="pf" style="width:85%"></div></div><div class="pc-pct">85%</div></div><div class="pc-s">Beliefs · Visual · Story · Guidelines · Pricing</div><div class="pc-arr">→</div></div>
         <div class="pc p2" onclick="openPillar(2)"><div class="pc-n">02</div><div class="pc-t">Messaging</div><div class="pc-bar"><div class="pt"><div class="pf" style="width:60%"></div></div><div class="pc-pct">60%</div></div><div class="pc-s">Audience · Narrative · Channels · Keywords</div><div class="pc-arr">→</div></div>
         <div class="pc p3" onclick="openPillar(3)"><div class="pc-n">03</div><div class="pc-t">Activate</div><div class="pc-bar"><div class="pt"><div class="pf" style="width:40%"></div></div><div class="pc-pct">40%</div></div><div class="pc-s">Channel-specific activation modules</div><div class="pc-arr">→</div></div>
         <div class="pc p4" onclick="openPillar(4)"><div class="pc-n">04</div><div class="pc-t">Convert</div><div class="pc-bar"><div class="pt"><div class="pf" style="width:20%"></div></div><div class="pc-pct">20%</div></div><div class="pc-s">Build or audit your conversion system</div><div class="pc-arr">→</div></div>
@@ -539,7 +539,14 @@ textarea.field-input{resize:vertical;min-height:76px;line-height:1.5}
         <button class="stab" id="stb-ai" onclick="stTab('ai')">✦ Strategy Tools</button>
       </div>
       <div id="st-learn">
-        <div class="learn-media"><div class="lm-icon">🎬</div><div class="lm-title" id="lm-title">Video Lesson</div><div class="lm-sub">Add your video or podcast link for this section</div><button class="btn btn-g btn-sm">+ Add Media</button></div>
+        <div class="card" style="margin-bottom:14px">
+          <div class="ch">
+            <div class="ct" id="lm-title">Media & Resources</div>
+            <button class="btn btn-g btn-sm" onclick="addMedia()">+ Add link</button>
+          </div>
+          <div style="font-size:11px;color:var(--t3);margin-bottom:8px">Drop links to anything already made — Looms, Drive folders, Canva files, Notion docs. Saved per brand + section.</div>
+          <div id="lm-media-list"></div>
+        </div>
         <div class="learn-key"><strong>Key Takeaway</strong><span id="lk-text"></span></div>
       </div>
       <div id="st-sheet" style="display:none"><div class="worksheet" id="ws-fields"></div><div class="save-r"><button class="btn btn-p btn-sm" onclick="saveWS()">Save Answers</button></div></div>
@@ -1129,17 +1136,14 @@ textarea.field-input{resize:vertical;min-height:76px;line-height:1.5}
 
     <!-- ASSET VAULT -->
     <div class="view" id="view-res">
-      <div class="pg-title">Asset Vault</div>
-      <div class="pg-sub">Everything produced in your Brand OS, plus curated resources.</div>
+      <div class="pg-title" id="vault-title">Asset Vault</div>
+      <div class="pg-sub" id="vault-sub">Drop links to anything already made — Drive folders, Canva files, Loom recordings, Notion pages. Saved per brand.</div>
       <div class="res-tabs"><button class="rtab active" id="rtab-vault" onclick="resTab('vault')">My Assets</button><button class="rtab" id="rtab-lib" onclick="resTab('lib')">Curated Library</button></div>
       <div id="r-vault">
-        <div class="vault-grid">
-          <div class="vi"><div class="vi-icon">🎨</div><div class="vi-t">Brand Guidelines</div><div class="vi-m">PDF · Brand Pillar</div><div class="vi-acts"><button class="btn btn-g btn-sm">Open</button><button class="btn btn-g btn-sm">Download</button></div></div>
-          <div class="vi"><div class="vi-icon">📸</div><div class="vi-t">Logo Suite</div><div class="vi-m">ZIP · 12 files</div><div class="vi-acts"><button class="btn btn-g btn-sm">Open</button><button class="btn btn-g btn-sm">Download</button></div></div>
-          <div class="vi"><div class="vi-icon">✍️</div><div class="vi-t">Brand Story Draft</div><div class="vi-m">Generated · Brand</div><div class="vi-acts"><button class="btn btn-g btn-sm">Open</button><button class="btn btn-g btn-sm">Edit</button></div></div>
-          <div class="vi"><div class="vi-icon">📋</div><div class="vi-t">Messaging Playbook</div><div class="vi-m">In progress · Messaging</div><div class="vi-acts"><button class="btn btn-g btn-sm">Open</button><button class="btn btn-g btn-sm">Edit</button></div></div>
-          <div class="vi"><div class="vi-icon">🔁</div><div class="vi-t">Content Framework</div><div class="vi-m">Audience + Format + Cadence</div><div class="vi-acts"><button class="btn btn-p btn-sm" onclick="nav('studio');studioNav('strategy')">Open →</button></div></div>
-          <div class="vi"><div class="vi-icon">🔗</div><div class="vi-t">Sales Page Copy</div><div class="vi-m">Not started</div><div class="vi-acts"><button class="btn btn-p btn-sm" onclick="openPillar(4)">Start →</button></div></div>
+        <div class="vault-grid" id="vault-grid"></div>
+        <div style="margin-top:14px;display:flex;gap:8px;align-items:center">
+          <button class="btn btn-p btn-sm" onclick="addVaultItem()">+ Add Asset</button>
+          <span style="font-size:12px;color:var(--t3)">Anything with a link can live here. Stored in your browser per brand.</span>
         </div>
       </div>
       <div id="r-lib" style="display:none">
@@ -1532,6 +1536,25 @@ const PILLARS = {
           {t:'opts',l:'What do you currently have documented?',o:['Logo files','Color hex codes','Typography choices','Voice guidelines','Photography style','Nothing yet']},
           {t:'long',l:'What does your brand never do? (voice, visual, messaging)',p:'The dos and don\'ts that define your boundaries...'},
         ],chips:['What should go in my brand guidelines?','Generate a brand voice section','Help me write my dos and don\'ts']},
+      {id:'pricing-positioning',icon:'💰',title:'Pricing & Positioning',desc:'What you sell, what it costs, and the revenue you\'re actually pricing toward.',status:'todo',
+        key:'Pricing is brand strategy made visible. A premium positioning at commodity prices reads as confused — and leaves revenue on the table every time. List the offers, name the prices, and check them against the brand you say you are.',
+        fields:[
+          {t:'long',l:'List every offer this brand sells',h:'One per line. Service name + scope. Be exhaustive — including offers you intend to launch.',p:'e.g.\nSingle Zone — one room, one system\nPartial Home — key spaces, 1–2 visits\nFull Home — every room, full team, full timeline'},
+          {t:'long',l:'Price for each offer',h:'Match the order above. Note if it\'s flat, hourly, tiered, package, or "starting at."',p:'e.g.\nSingle Zone — $850 flat\nPartial Home — $2,400–$3,800 package\nFull Home — starting at $7,500'},
+          {t:'opts',l:'Where does each offer sit in the market?',h:'Pick the posture this brand actually owns — not where you wish it sat.',o:['Entry / accessible','Mid-market','Premium','Luxury','Mixed (intentional ladder)','Below competitors','Above competitors']},
+          {t:'text',l:'Revenue goal this year',h:'A real number. Annual.',p:'e.g. $480,000'},
+          {t:'text',l:'Revenue goal this quarter',p:'e.g. $120,000'},
+          {t:'long',l:'Where do you suspect revenue is being left on the table?',h:'Pricing too low? Missing offer tier? Discounts you keep giving? Audience that would pay more? Be honest.',p:'Three things, max. The most obvious ones first...'},
+          {t:'text',l:'Who is the closest pricing comparable in the market?',h:'A competitor whose pricing you\'d like to be matched against.',p:'e.g. Neat Method · The Home Edit · local boutique organizers'},
+        ],
+        chips:[
+          'Audit my pricing against my brand positioning — what doesn\'t match?',
+          'Where am I leaving revenue on the table?',
+          'Suggest an offer ladder for my brand based on my positioning',
+          'Is my pricing aligned with my target audience and what they\'re willing to pay?',
+          'Recommend specific price increases or restructuring with reasoning',
+          'What\'s the next offer I should add to reach my revenue goal?',
+        ]},
     ]},
   2:{title:'Messaging',sub:'Define how you speak — voice, narrative, and positioning.',color:'var(--c2)',label:'Pillar 02 · Messaging',
     sections:[
@@ -1641,6 +1664,184 @@ const BRAND_STATE = {
 // Per-brand framework store so switching brands swaps the saved framework in/out.
 const FRAMEWORKS_BY_BRAND = {};
 
+// ══════════════════════════════════════════════════════════
+// LOCAL STORAGE LAYER — paste-a-link assets, media, worksheet answers
+// Everything is namespaced under `cabri:` and scoped per-brand.
+// ══════════════════════════════════════════════════════════
+const LS = {
+  get(key, fallback){
+    try { const v = localStorage.getItem('cabri:'+key); return v ? JSON.parse(v) : fallback; }
+    catch(e){ return fallback; }
+  },
+  set(key, value){
+    try { localStorage.setItem('cabri:'+key, JSON.stringify(value)); } catch(e){}
+  },
+  del(key){ try { localStorage.removeItem('cabri:'+key); } catch(e){} }
+};
+function brandKey(){ const { brand } = getCurrentBrand(); return brand?.key || 'default'; }
+
+// Default seed items shown for every brand until the user pastes URLs / adds their own.
+const VAULT_SEED = [
+  { id:'brand-guidelines', icon:'🎨', title:'Brand Guidelines',    meta:'Brand foundation doc, PDF or Notion page' },
+  { id:'logo-suite',       icon:'📸', title:'Logo & Visual Assets',meta:'Drive folder, Canva file, or Figma' },
+  { id:'photography',      icon:'🖼️', title:'Photography',         meta:'Brand shoots, lifestyle library' },
+  { id:'brand-story',      icon:'✍️', title:'Brand Story / Bio',   meta:'About copy, founder story, mission statement' },
+  { id:'messaging',        icon:'📋', title:'Messaging Playbook',  meta:'Voice, taglines, copy bank' },
+  { id:'content-shoots',   icon:'🎬', title:'Content Shoot Files', meta:'Raw or edited shoot footage' },
+];
+function getVault(){
+  const k = `vault:${brandKey()}`;
+  let items = LS.get(k, null);
+  if(!items){ items = VAULT_SEED.map(s => ({...s, url:''})); LS.set(k, items); }
+  return items;
+}
+function setVault(items){ LS.set(`vault:${brandKey()}`, items); }
+
+function renderVault(){
+  const grid = document.getElementById('vault-grid');
+  const title = document.getElementById('vault-title');
+  if(!grid) return;
+  const { brand } = getCurrentBrand();
+  if(title) title.textContent = `${brand?.name || 'Brand'} — Asset Vault`;
+  const items = getVault();
+  if(items.length === 0){
+    grid.innerHTML = `<div style="grid-column:1/-1;padding:24px;text-align:center;color:var(--t3);font-size:13px">No assets yet. Click "+ Add Asset" to drop your first link.</div>`;
+    return;
+  }
+  grid.innerHTML = items.map((it,i) => {
+    const hasUrl = !!(it.url && it.url.trim());
+    return `<div class="vi" data-vi="${i}">
+      <div class="vi-icon">${it.icon||'📎'}</div>
+      <div class="vi-t">${escapeHtml(it.title)}</div>
+      <div class="vi-m">${escapeHtml(it.meta || '')}</div>
+      ${hasUrl
+        ? `<div style="font-size:11px;color:var(--t3);word-break:break-all;margin:6px 0 8px;line-height:1.4">${escapeHtml(it.url)}</div>`
+        : `<div style="font-size:11px;color:var(--t3);font-style:italic;margin:6px 0 8px">No link yet</div>`}
+      <div class="vi-acts">
+        ${hasUrl ? `<button class="btn btn-p btn-sm" onclick="openVaultUrl(${i})">Open ↗</button>` : ''}
+        <button class="btn btn-g btn-sm" onclick="editVaultItem(${i})">${hasUrl?'Edit link':'+ Add link'}</button>
+        <button class="btn btn-g btn-sm" onclick="removeVaultItem(${i})" title="Remove">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function openVaultUrl(i){
+  const items = getVault(); const url = items[i]?.url;
+  if(url) window.open(url, '_blank', 'noopener');
+}
+function editVaultItem(i){
+  const items = getVault();
+  const cur = items[i];
+  const url = prompt(`Paste the URL for "${cur.title}"\n\n(Google Drive, Loom, Canva, Notion — any link works)`, cur.url || '');
+  if(url === null) return; // canceled
+  items[i] = { ...cur, url: url.trim() };
+  setVault(items); renderVault();
+}
+function removeVaultItem(i){
+  const items = getVault();
+  if(!confirm(`Remove "${items[i].title}" from this brand's vault?`)) return;
+  items.splice(i,1); setVault(items); renderVault();
+}
+function addVaultItem(){
+  const title = prompt('Asset name?\n\ne.g. "Q2 Content Shoot", "Notion Brand Hub", "Pricing Calculator"');
+  if(!title) return;
+  const url = prompt(`Paste the URL for "${title.trim()}"\n\n(Optional — you can add it later)`, '') || '';
+  const items = getVault();
+  items.push({ id:'custom-'+Date.now(), icon:'📎', title: title.trim(), meta:'Custom asset', url: url.trim() });
+  setVault(items); renderVault();
+}
+
+// ─── MEDIA & RESOURCES (per-section, per-brand) ───
+function mediaKey(){ return `media:${brandKey()}:${curSectionPillar}:${curSection?.id||'-'}`; }
+function getMedia(){ return LS.get(mediaKey(), []); }
+function setMedia(arr){ LS.set(mediaKey(), arr); }
+function renderMedia(){
+  const host = document.getElementById('lm-media-list');
+  if(!host) return;
+  const items = getMedia();
+  if(items.length === 0){
+    host.innerHTML = `<div style="font-size:12px;color:var(--t3);font-style:italic;padding:8px 0">Nothing pinned to this section yet.</div>`;
+    return;
+  }
+  host.innerHTML = items.map((m,i) => `
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);margin-bottom:6px">
+      <div style="font-size:16px">${m.icon||'🔗'}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:500">${escapeHtml(m.label)}</div>
+        <div style="font-size:11px;color:var(--t3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(m.url)}</div>
+      </div>
+      <button class="btn btn-p btn-sm" onclick="window.open('${m.url.replace(/'/g,"\\'")}','_blank','noopener')">Open ↗</button>
+      <button class="btn btn-g btn-sm" onclick="removeMedia(${i})">✕</button>
+    </div>
+  `).join('');
+}
+function addMedia(){
+  const label = prompt('Label for this media\n\ne.g. "MTO brand pitch (Loom)", "Q2 shoot folder", "Brand whiteboard"');
+  if(!label) return;
+  const url = prompt(`URL for "${label.trim()}"`, '');
+  if(!url) return;
+  const items = getMedia();
+  items.push({ icon:'🔗', label: label.trim(), url: url.trim() });
+  setMedia(items); renderMedia();
+}
+function removeMedia(i){
+  const items = getMedia();
+  items.splice(i,1); setMedia(items); renderMedia();
+}
+
+// ─── WORKSHEET ANSWER PERSISTENCE (per-section, per-brand) ───
+function wsKey(pillar, sectionId){ return `ws:${brandKey()}:${pillar}:${sectionId}`; }
+function getWS(pillar, sectionId){ return LS.get(wsKey(pillar, sectionId), null); }
+function setWS(pillar, sectionId, data){ LS.set(wsKey(pillar, sectionId), data); }
+function captureWSFields(sec){
+  const data = { fields:[], options:{}, savedAt: new Date().toISOString() };
+  (sec.fields || []).forEach((f, i) => {
+    if(f.t === 'opts'){
+      const group = document.querySelectorAll('#ws-fields .fg')[i];
+      data.options[i] = group ? Array.from(group.querySelectorAll('.opt.sel')).map(b => b.textContent.trim()) : [];
+    } else {
+      const el = document.getElementById('f'+i);
+      data.fields[i] = el ? el.value.trim() : '';
+    }
+  });
+  return data;
+}
+function applyWSFields(sec, data){
+  if(!data) return;
+  (sec.fields || []).forEach((f, i) => {
+    if(f.t === 'opts'){
+      const group = document.querySelectorAll('#ws-fields .fg')[i];
+      if(!group) return;
+      const selected = new Set(data.options?.[i] || []);
+      group.querySelectorAll('.opt').forEach(btn => {
+        btn.classList.toggle('sel', selected.has(btn.textContent.trim()));
+      });
+    } else {
+      const el = document.getElementById('f'+i);
+      if(el) el.value = data.fields?.[i] || '';
+    }
+  });
+}
+// Status derived from saved answers (not hardcoded in PILLARS):
+//   - none filled → 'todo'
+//   - some filled → 'progress'
+//   - all required (text/long) + at least one opts group filled → 'done'
+function statusFor(pillar, sec){
+  const data = getWS(pillar, sec.id);
+  if(!data) return 'todo';
+  const fields = sec.fields || [];
+  const filledText = fields.filter((f,i) => f.t !== 'opts' && (data.fields?.[i]||'').trim().length > 0).length;
+  const totalText  = fields.filter(f => f.t !== 'opts').length;
+  const optsGroups = fields.filter(f => f.t === 'opts').length;
+  const filledOpts = fields.filter((f,i) => f.t === 'opts' && (data.options?.[i]||[]).length > 0).length;
+  const filledAny  = filledText + filledOpts;
+  if(filledAny === 0) return 'todo';
+  if(totalText > 0 && filledText >= totalText && (optsGroups === 0 || filledOpts >= 1)) return 'done';
+  return 'progress';
+}
+
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
 // ── STATE ──
 let curPillar = 1;
 let curSection = null;
@@ -1660,6 +1861,8 @@ function nav(id){
   setCrumb(labels[id]||id);
   // When opening Content Studio, always re-render the audience section
   if(id==='studio') renderStudioAudience();
+  // When opening Asset Vault, render the current brand's vault
+  if(id==='res') renderVault();
 }
 
 function setCrumb(txt){document.getElementById('crumb').innerHTML=`Brand OS › <b>${txt}</b>`;}
@@ -1688,7 +1891,10 @@ function openPillar(n){
 
 function renderSections(secs){
   const sl={done:'Complete',progress:'In Progress',todo:'Not Started'};
-  document.getElementById('pl-sections').innerHTML=`<div class="sec-list">${secs.map(s=>`<div class="sc" onclick="openSection(${curPillar},'${s.id}')"><div class="sc-icon">${s.icon}</div><div class="sc-t">${s.title}</div><div class="sc-d">${s.desc}</div><div class="sc-st"><div class="sdot ${s.status}"></div>${sl[s.status]||'Not Started'}</div></div>`).join('')}</div>`;
+  document.getElementById('pl-sections').innerHTML=`<div class="sec-list">${secs.map(s=>{
+    const computed = statusFor(curPillar, s);
+    return `<div class="sc" onclick="openSection(${curPillar},'${s.id}')"><div class="sc-icon">${s.icon}</div><div class="sc-t">${s.title}</div><div class="sc-d">${s.desc}</div><div class="sc-st"><div class="sdot ${computed}"></div>${sl[computed]}</div></div>`;
+  }).join('')}</div>`;
 }
 
 function renderChannels(){
@@ -1759,11 +1965,15 @@ function openSection(pillar,id){
   document.getElementById('sec-back-lbl').textContent=PILLARS[pillar].title;
   document.getElementById('sec-title').textContent=sec.title;
   document.getElementById('sec-sub').textContent=sec.desc;
-  document.getElementById('lm-title').textContent=sec.title+' — Video Lesson';
+  document.getElementById('lm-title').textContent=`Media & Resources · ${sec.title}`;
   document.getElementById('lk-text').textContent=sec.key;
   document.getElementById('sec-chips').innerHTML=sec.chips.map(c=>`<button class="chip" onclick="secChip('${c.replace(/'/g,"\\'")}')">${c}</button>`).join('');
   document.getElementById('sec-ai-resp').innerHTML='<span class="ai-italic">I know your framework and your answers. Ask anything or use a prompt above.</span>';
   renderWS(sec.fields);
+  // Restore any saved answers for this brand+section
+  applyWSFields(sec, getWS(pillar, sec.id));
+  // Render Media & Resources for this brand+section
+  renderMedia();
   stTab('learn');
   setCrumb(`${PILLARS[pillar].title} › ${sec.title}`);
 }
@@ -1950,6 +2160,10 @@ function resTab(tab){
 
 function saveWS(){
   const btn=event.target;
+  // Persist all fields to localStorage scoped per brand + section
+  if(curSection){
+    setWS(curSectionPillar, curSection.id, captureWSFields(curSection));
+  }
   // If saving Messaging → Audience, persist to shared state
   if(curSection && curSection.id==='audience' && curSectionPillar===2){
     const f0=document.getElementById('f0');
@@ -2029,6 +2243,9 @@ function applyCurrentBrand(){
   // Refresh framework UI if Strategy / Generate tabs are currently visible
   if (document.getElementById('s-strategy')?.style.display === 'block') loadContentFramework();
   if (document.getElementById('s-gen')?.style.display === 'block')      renderFrameworkPreview();
+
+  // Re-render Asset Vault if user is currently on it
+  if (document.getElementById('view-res')?.classList.contains('active')) renderVault();
 
   // Brand-aware pillar percentages — dashboard cards + sidebar nav items
   renderPillarProgress();
