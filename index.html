@@ -1055,11 +1055,7 @@ textarea.field-input{resize:vertical;min-height:76px;line-height:1.5}
           <div style="width:10px;height:10px;border-radius:3px;background:var(--c3)"></div>
           <div class="pg-title" style="margin-bottom:0;font-size:18px">Activate Pillar Dashboard</div>
         </div>
-        <div class="metric-grid" style="grid-template-columns:repeat(3,1fr)">
-          <div class="metric-card"><div class="metric-label">Channels Active</div><div class="metric-val" style="color:var(--c3)">2</div><div class="metric-sub">Instagram · Email</div><div class="metric-bar"><div class="metric-bar-fill" style="width:33%;background:var(--c3)"></div></div></div>
-          <div class="metric-card"><div class="metric-label">Content This Week</div><div class="metric-val" style="color:var(--c3)">3</div><div class="metric-sub">posts published</div><div class="metric-bar"><div class="metric-bar-fill" style="width:43%;background:var(--c3)"></div></div></div>
-          <div class="metric-card"><div class="metric-label">Channel Modules</div><div class="metric-val" style="color:var(--c3)">4/10</div><div class="metric-sub">sections complete</div><div class="metric-bar"><div class="metric-bar-fill" style="width:40%;background:var(--c3)"></div></div></div>
-        </div>
+        <div id="activate-dashboard-content" style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:18px"></div>
         <div class="pulse-card">
           <div class="pulse-head"><div class="pulse-title">✦ Activate Pillar Insights</div><button class="btn btn-g btn-sm" onclick="generatePillarInsight('Activate')">Refresh</button></div>
           <div id="db-activate-insight" class="pulse-items">
@@ -1074,26 +1070,7 @@ textarea.field-input{resize:vertical;min-height:76px;line-height:1.5}
           <div style="width:10px;height:10px;border-radius:3px;background:var(--c4)"></div>
           <div class="pg-title" style="margin-bottom:0;font-size:18px">Convert Pillar Dashboard</div>
         </div>
-        <div class="pillar-dash-grid">
-          <div class="pd-card">
-            <div class="pd-label">Funnel Stage Completion</div>
-            <div class="pd-items">
-              <div class="pd-row"><div class="pd-check">◐</div><div class="pd-name">Offer Suite Mapped</div><div class="pd-status st-prog">In Progress</div></div>
-              <div class="pd-row"><div class="pd-check">○</div><div class="pd-name">Lead Magnet Built</div><div class="pd-status st-todo">Not Started</div></div>
-              <div class="pd-row"><div class="pd-check">○</div><div class="pd-name">Lead Capture Live</div><div class="pd-status st-todo">Not Started</div></div>
-              <div class="pd-row"><div class="pd-check">○</div><div class="pd-name">Welcome Sequence</div><div class="pd-status st-todo">Not Started</div></div>
-              <div class="pd-row"><div class="pd-check">○</div><div class="pd-name">Sales Page</div><div class="pd-status st-todo">Not Started</div></div>
-              <div class="pd-row"><div class="pd-check">○</div><div class="pd-name">Booking System</div><div class="pd-status st-todo">Not Started</div></div>
-            </div>
-          </div>
-          <div class="pd-card">
-            <div class="pd-label">Conversion Readiness</div>
-            <div style="font-family:'Playfair Display',serif;font-size:32px;font-weight:400;margin-bottom:4px;color:var(--c4)">20</div>
-            <div style="font-size:12px;color:var(--t2);margin-bottom:10px">Funnel completion score</div>
-            <div class="metric-bar"><div class="metric-bar-fill" style="width:20%;background:var(--c4)"></div></div>
-            <div style="font-size:12px;color:var(--t2);margin-top:8px">Offer suite in progress · No active funnel yet · Booking system not connected</div>
-          </div>
-        </div>
+        <div id="convert-dashboard-content" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px"></div>
         <div class="pulse-card">
           <div class="pulse-head"><div class="pulse-title">✦ Convert Pillar Insights</div><button class="btn btn-g btn-sm" onclick="generatePillarInsight('Convert')">Refresh</button></div>
           <div id="db-convert-insight" class="pulse-items">
@@ -1966,8 +1943,8 @@ function openPillar(n){
   document.getElementById('pl-convert').style.display='none';
   document.getElementById('pl-automate').style.display='none';
   setCrumb(d.title);
-  if(n===3){document.getElementById('pl-activate').style.display='block';renderChannels();}
-  else if(n===4){document.getElementById('pl-convert').style.display='block';}
+  if(n===3){document.getElementById('pl-sections').style.display='block';renderSections(d.sections);}
+  else if(n===4){document.getElementById('pl-sections').style.display='block';renderSections(d.sections);}
   else if(n===5){document.getElementById('pl-automate').style.display='block';renderPains();}
   else{document.getElementById('pl-sections').style.display='block';renderSections(d.sections);}
 }
@@ -2805,6 +2782,13 @@ function dbTab(tab){
     document.getElementById('db-'+t).style.display=t===tab?'block':'none';
     document.getElementById('dbt-'+t).classList.toggle('active',t===tab);
   });
+  // Render dashboards when tabs are opened
+  if(tab==='activate'){
+    renderActivateDashboard();
+  }
+  if(tab==='convert'){
+    renderConvertDashboard();
+  }
   // Sync pain count from automate pillar state
   if(tab==='automate'){
     const cnt=selectedPains.size;
@@ -2812,6 +2796,39 @@ function dbTab(tab){
     document.getElementById('db-pain-bar').style.width=Math.min(cnt*8,100)+'%';
   }
 }
+
+function renderActivateDashboard(){
+  const sections=PILLARS[3].sections;
+  const container=document.getElementById('activate-dashboard-content');
+  if(!container || !sections || sections.length===0) return;
+  
+  container.innerHTML=sections.map(s=>{
+    const computed=statusFor(3,s);
+    return `<div class="card" style="cursor:pointer;border:1px solid var(--border);border-radius:var(--r);padding:16px;box-shadow:var(--sh)" onclick="openSection(3,'${s.id}')"><div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px"><div style="font-size:20px">${s.icon}</div><div class="sdot ${computed}"></div></div><div style="font-size:13px;font-weight:500;margin-bottom:4px">${s.title}</div><div style="font-size:12px;color:var(--t2);margin-bottom:10px">${s.desc}</div><div style="font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.05em">${{done:'Complete',progress:'In Progress',todo:'Not Started'}[computed]}</div></div>`;
+  }).join('');
+}
+
+
+function renderConvertDashboard(){
+  const sections=PILLARS[4].sections;
+  const container=document.getElementById('convert-dashboard-content');
+  if(!container || !sections || sections.length===0) return;
+  
+  // Left side: Steps overview
+  const stepsHtml=`<div class="pd-card"><div class="pd-label">Build Path (6 Steps)</div><div class="pd-items">${sections.map((s,i)=>{
+    const computed=statusFor(4,s);
+    const icon={done:'✓',progress:'◐',todo:'○'}[computed];
+    return `<div class="pd-row" style="cursor:pointer" onclick="openSection(4,'${s.id}')"><div class="pd-check">${icon}</div><div class="pd-name">${s.title}</div><div class="pd-status st-${computed}">${{done:'Complete',progress:'In Progress',todo:'Not Started'}[computed]}</div></div>`;
+  }).join('')}</div></div>`;
+  
+  // Right side: Progress & summary
+  const completedCount=sections.filter(s=>statusFor(4,s)==='done').length;
+  const progress=Math.round((completedCount/sections.length)*100);
+  const summaryHtml=`<div class="pd-card"><div class="pd-label">Funnel Readiness</div><div style="font-family:'Playfair Display',serif;font-size:32px;font-weight:400;margin-bottom:4px;color:var(--c4)">${progress}</div><div style="font-size:12px;color:var(--t2);margin-bottom:10px">${completedCount}/${sections.length} steps complete</div><div class="metric-bar"><div class="metric-bar-fill" style="width:${progress}%;background:var(--c4)"></div></div><div style="font-size:12px;color:var(--t2);margin-top:8px">Click any step above to get started →</div></div>`;
+  
+  container.innerHTML=stepsHtml+summaryHtml;
+}
+
 
 async function generatePulse(){
   const el=document.getElementById('pulse-items');
