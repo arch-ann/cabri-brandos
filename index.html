@@ -435,6 +435,7 @@ textarea.field-input{resize:vertical;min-height:76px;line-height:1.5}
     <div class="tb-r">
       <button class="btn btn-g btn-sm" onclick="jumpAI()">✦ Ask</button>
       <button class="btn btn-p btn-sm">+ Add Asset</button>
+      <button class="btn btn-g btn-sm" onclick="exportBrandOS()" title="Backup your Brand OS data locally">↓ Backup Data</button>
     </div>
   </div>
   <div class="content">
@@ -2963,6 +2964,113 @@ async function studioGenerate(){
   const r = await callClaude(prompt, 'User is in Content Studio → Idea Generator. The Content Framework (audience + format + cadence) is the single source of truth for what to generate.');
   out.textContent = r;
   busy = false;
+}
+
+// ── EXPORT / IMPORT ──
+function exportBrandOS(){
+  const exportData = {
+    exportedAt: new Date().toISOString(),
+    version: '2.2',
+    brands: {},
+  };
+  
+  // Export each brand's data
+  Object.keys(BRANDS).forEach(brandKey => {
+    const brand = BRANDS[brandKey];
+    exportData.brands[brandKey] = {
+      name: brand.name,
+      industry: brand.industry,
+      health: brand.health,
+      pillars: brand.pillars,
+      audit: brand.audit,
+      recommendations: brand.recommendations,
+      // Save all the form answers for each pillar
+      formData: {
+        brand: getWS(1, null, brandKey),
+        messaging: getWS(2, null, brandKey),
+        activate: getWS(3, null, brandKey),
+        convert: getWS(4, null, brandKey),
+        automate: getWS(5, null, brandKey),
+      },
+    };
+  });
+  
+  // Also capture current brand state
+  const { brand } = getCurrentBrand();
+  if(brand){
+    exportData.lastActiveBrand = brand.key;
+    exportData.brandState = BRAND_STATE;
+  }
+  
+  // Create a blob and trigger download
+  const json = JSON.stringify(exportData, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `cabri-brandos-backup-${new Date().toISOString().split('T')[0]}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  
+  // Show confirmation
+  alert(`✓ Your Brand OS data has been backed up!\n\nFile: ${a.download}\n\nKeep this file safe. When we set up the cloud version, you'll upload it to restore all your work.`);
+}
+
+function importBrandOS(file){
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const importData = JSON.parse(e.target.result);
+      
+      if(!importData.brands){
+        alert('❌ Invalid backup file. Make sure you\'re uploading a backup exported from Brand OS.');
+        return;
+      }
+      
+      // Merge imported data into BRANDS
+      Object.keys(importData.brands).forEach(brandKey => {
+        const importedBrand = importData.brands[brandKey];
+        if(BRANDS[brandKey]){
+          // Merge the data
+          BRANDS[brandKey].health = importedBrand.health;
+          BRANDS[brandKey].pillars = importedBrand.pillars;
+          BRANDS[brandKey].audit = importedBrand.audit;
+          BRANDS[brandKey].recommendations = importedBrand.recommendations;
+        }
+      });
+      
+      // Restore brand state
+      if(importData.brandState){
+        Object.assign(BRAND_STATE, importData.brandState);
+      }
+      
+      // Switch to the last active brand
+      if(importData.lastActiveBrand){
+        switchBrand(importData.lastActiveBrand);
+      }
+      
+      alert('✓ Your Brand OS data has been restored!\n\nRefresh the page to see all your work.');
+      location.reload();
+    } catch(err){
+      alert(`❌ Error importing file: ${err.message}`);
+    }
+  };
+  reader.readAsText(file);
+}
+
+// Allow importing from file input
+function setupImportInput(){
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = (e) => {
+    if(e.target.files[0]){
+      importBrandOS(e.target.files[0]);
+    }
+  };
+  input.click();
 }
 </script>
 </body>
